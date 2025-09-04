@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base theme */
+html { scroll-behavior: smooth; }
+body { @apply bg-white text-black dark:bg-neutral-950 dark:text-neutral-100; }
+
+/* Neutral accent for all checkboxes/radios (light) */
+@layer utilities {
+  input[type=checkbox],
+  input[type=radio] {
+    @apply accent-neutral-400;
+  }
+}
+
+/* Neutral accent for all checkboxes/radios (dark) */
+@layer utilities {
+  .dark input[type=checkbox],
+  .dark input[type=radio] {
+    @apply accent-neutral-600;
+  }
+}

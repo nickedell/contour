@@ -1,0 +1,91 @@
+{
+  "stages": [
+    {
+      "key": "P",
+      "label": "Problem Framing",
+      "order": 1,
+      "color": "#334155"
+    },
+    {
+      "key": "DV",
+      "label": "Design & Validation",
+      "order": 2,
+      "color": "#0EA5E9"
+    },
+    {
+      "key": "D",
+      "label": "Delivery",
+      "order": 3,
+      "color": "#10B981"
+    },
+    {
+      "key": "S",
+      "label": "Scale & Learn",
+      "order": 4,
+      "color": "#F59E0B"
+    }
+  ],
+  "moments": [
+    {
+      "id": "P1",
+      "title": "Value Hypothesis",
+      "stageKey": "P",
+      "column": 1,
+      "description": "Clarify value, KPIs, constraints.",
+      "experience": {
+        "personas": [
+          "Sponsor",
+          "Users"
+        ],
+        "jobsToBeDone": [
+          "Agree targets"
+        ],
+        "momentsOfTruth": [
+          "Alignment"
+        ],
+        "artefacts": [
+          "One-pager"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "KPI baselines"
+        ],
+        "models": [
+          "Feasibility"
+        ],
+        "automations": [],
+        "risks": [
+          "Scope creep"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Misaligned incentives"
+        ],
+        "nudges": [
+          "Show social proof"
+        ],
+        "frameworks": [
+          "Fogg"
+        ],
+        "habit": "Weekly check-in"
+      },
+      "governance": {
+        "checks": [
+          "Ethics review"
+        ],
+        "metrics": [
+          "Baseline set"
+        ]
+      },
+      "layers": [
+        "value",
+        "governance",
+        "experience",
+        "ai"
+      ],
+      "dpLevel": "tactical"
+    }
+  ]
+}

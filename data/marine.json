@@ -1,0 +1,452 @@
+{
+  "stages": [
+    {
+      "key": "A",
+      "label": "Prospecting",
+      "order": 1,
+      "color": "#6B7280"
+    },
+    {
+      "key": "B",
+      "label": "Buyer ID",
+      "order": 2,
+      "color": "#6B7280"
+    },
+    {
+      "key": "C",
+      "label": "CDD",
+      "order": 3,
+      "color": "#6B7280"
+    },
+    {
+      "key": "E",
+      "label": "Execution",
+      "order": 4,
+      "color": "#6B7280"
+    },
+    {
+      "key": "F",
+      "label": "Post-Deal",
+      "order": 5,
+      "color": "#6B7280"
+    }
+  ],
+  "personas": {
+    "Commercial Manager": {
+      "category": "Core",
+      "snapshot": "Owns commercial strategy and margin posture; approves direct vs trader paths and term deals; escalation point for credit/ops conflicts.",
+      "goals": [
+        "Margin $/mt",
+        "Gross margin",
+        "Spot\u2192term conversion",
+        "Win %",
+        "Negotiation cycle time"
+      ],
+      "responsibilities": [
+        "Approve pricing / exceptions",
+        "Decide direct vs trader",
+        "Support strategic accounts",
+        "JV management"
+      ],
+      "pains": [
+        "Quote validity vs approval delays",
+        "Opaque buyer identity",
+        "Limited visibility of credit / CDD status"
+      ],
+      "needs": [
+        "Pre-clear pipeline view",
+        "Buyer graph",
+        "Negotiation guardrails",
+        "Decarbonisation fuels strategy"
+      ]
+    },
+    "Originator": {
+      "category": "Core",
+      "snapshot": "Develops new accounts and strategic relationships; shapes long-horizon term deals; sometimes double-hats with marketing.",
+      "goals": [
+        "New accounts",
+        "Term volume secured",
+        "Pipeline health"
+      ],
+      "responsibilities": [
+        "Prospecting",
+        "Shaping proposals",
+        "Advancing relationships"
+      ],
+      "pains": [
+        "Reliance on personal networks",
+        "No system of record, long lead times"
+      ],
+      "needs": [
+        "Centralised buyer graph",
+        "Pre-onboarding campaigns",
+        "Predictive route signals"
+      ]
+    },
+    "Analyst (Market Strategist)": {
+      "category": "Core",
+      "snapshot": "Generates market trends and port prioritisation; produces analytics that inform pipeline and strategy; increasing focus on future fuels.",
+      "goals": [
+        "Accuracy of forecasts",
+        "Adoption of insights",
+        "Pipeline impact"
+      ],
+      "responsibilities": [
+        "Port priority analytics",
+        "Fleet / vessel movement tracking",
+        "KPI packs",
+        "Market outlook"
+      ],
+      "pains": [
+        "Limited real-time data",
+        "Fragmented feeds",
+        "Poor integration with ops"
+      ],
+      "needs": [
+        "Automated alerts (congestion/outages)",
+        "Integration with e-BDN",
+        "Fuel-mix scenario models"
+      ]
+    },
+    "Marketer (Account Manager)": {
+      "category": "Core",
+      "snapshot": "Front-line sales role; quoting & fixing in high-tempo windows.",
+      "goals": [
+        "Quotes/day",
+        "Quote-to-win %",
+        "Time-to-first-response",
+        "Revenue & margin"
+      ],
+      "responsibilities": [
+        "Buyer identification",
+        "Outreach",
+        "Quoting",
+        "Fix",
+        "Hand-off to Ops",
+        "Maintain pipeline"
+      ],
+      "pains": [
+        "Unclear buyer identity",
+        "CDD delays",
+        "Fragmented negotiations"
+      ],
+      "needs": [
+        "Buyer identification automation",
+        "CDD readiness flags",
+        "Unified negotiation timeline & timers"
+      ]
+    },
+    "Bunker Buyer (Vessel Owner / Operator)": {
+      "category": "Secondary",
+      "snapshot": "Procurement authority for bunkers; ensures fuel availability at lowest TCO and compliance.",
+      "goals": [
+        "On-time supply",
+        "Lowest TCO",
+        "Supplier reliability",
+        "Compliance"
+      ],
+      "responsibilities": [
+        "RFQ issuance",
+        "Negotiation",
+        "PO acceptance"
+      ],
+      "pains": [
+        "Supplier reliability risk",
+        "Opaque pricing",
+        "Timing mismatches"
+      ],
+      "needs": [
+        "Visibility on supplier performance",
+        "Predictive cost tools"
+      ]
+    }
+  },
+  "moments": [
+    {
+      "id": "A1-signal-heatmap",
+      "title": "Prospect Signal Heatmap",
+      "stageKey": "A",
+      "column": 1,
+      "description": "Analyst highlights priority ports/routes using congestion and AIS.",
+      "experience": {
+        "personas": [
+          "Analyst (Market Strategist)",
+          "Originator",
+          "Marketer (Account Manager)"
+        ],
+        "jobsToBeDone": [
+          "Know who to contact next"
+        ],
+        "momentsOfTruth": [
+          "Fresh data",
+          "Actionability"
+        ],
+        "artefacts": [
+          "Signal dashboard"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "AIS meta",
+          "Congestion"
+        ],
+        "models": [
+          "Propensity"
+        ],
+        "automations": [
+          "Outreach list generation"
+        ],
+        "risks": [
+          "Data staleness"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Overload"
+        ],
+        "nudges": [
+          "Daily shortlist"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Marketer clears daily shortlist"
+      },
+      "governance": {
+        "checks": [
+          "Data provenance"
+        ],
+        "metrics": [
+          "Outreach conversion"
+        ]
+      },
+      "layers": [
+        "service",
+        "experience",
+        "value",
+        "ai"
+      ],
+      "dpLevel": "tactical",
+      "kpis": {}
+    },
+    {
+      "id": "B1-buyer-graph",
+      "title": "Buyer Identity Graph",
+      "stageKey": "B",
+      "column": 2,
+      "description": "Resolve buyer identity across brokers/traders/intermediaries.",
+      "experience": {
+        "personas": [
+          "Marketer (Account Manager)",
+          "Commercial Manager",
+          "Originator"
+        ],
+        "jobsToBeDone": [
+          "See who decides"
+        ],
+        "momentsOfTruth": [
+          "Accuracy",
+          "Timeliness"
+        ],
+        "artefacts": [
+          "Buyer graph",
+          "CDD flags"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "CRM",
+          "Email/meta",
+          "Deals"
+        ],
+        "models": [
+          "Entity resolution",
+          "Link analysis"
+        ],
+        "automations": [
+          "CDD readiness"
+        ],
+        "risks": [
+          "Privacy"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skepticism"
+        ],
+        "nudges": [
+          "Confidence bands"
+        ],
+        "frameworks": [
+          "COM-B"
+        ],
+        "habit": "Sales checks identity graph"
+      },
+      "governance": {
+        "checks": [
+          "Privacy review",
+          "Access controls"
+        ],
+        "metrics": [
+          "Quote-to-win %",
+          "CDD cycle time"
+        ]
+      },
+      "layers": [
+        "systems",
+        "ai",
+        "experience",
+        "governance",
+        "value"
+      ],
+      "dpLevel": "integrated",
+      "kpis": {}
+    },
+    {
+      "id": "C1-cdd-fastlane",
+      "title": "CDD Fast-Lane",
+      "stageKey": "C",
+      "column": 3,
+      "description": "Pre-clear likely buyers and create a fast path to quoting.",
+      "experience": {
+        "personas": [
+          "Commercial Manager",
+          "Marketer (Account Manager)",
+          "Originator"
+        ],
+        "jobsToBeDone": [
+          "Reduce delays"
+        ],
+        "momentsOfTruth": [
+          "Clarity",
+          "Speed"
+        ],
+        "artefacts": [
+          "CDD checklist",
+          "Flags"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "CDD history",
+          "Credit"
+        ],
+        "models": [
+          "Risk scoring"
+        ],
+        "automations": [
+          "Auto-doc requests",
+          "Status updates"
+        ],
+        "risks": [
+          "Bias"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Process fatigue"
+        ],
+        "nudges": [
+          "Progress bar"
+        ],
+        "frameworks": [
+          "BJ Fogg"
+        ],
+        "habit": "Sales submits CDD pack same day"
+      },
+      "governance": {
+        "checks": [
+          "KYC/AML",
+          "Audit trail"
+        ],
+        "metrics": [
+          "CDD lead time",
+          "Drop-off"
+        ]
+      },
+      "layers": [
+        "governance",
+        "systems",
+        "experience",
+        "ai"
+      ],
+      "dpLevel": "integrated",
+      "kpis": {
+        "CDD lead time": 0.65,
+        "Drop-off rate (inverse)": 0.3
+      }
+    },
+    {
+      "id": "E1-quote-assist",
+      "title": "Smart Quote Assist",
+      "stageKey": "E",
+      "column": 4,
+      "description": "Assist high-tempo quoting with market signals & guardrails.",
+      "experience": {
+        "personas": [
+          "Marketer (Account Manager)",
+          "Bunker Buyer (Vessel Owner / Operator)"
+        ],
+        "jobsToBeDone": [
+          "Quote quickly"
+        ],
+        "momentsOfTruth": [
+          "Latency",
+          "Reliability"
+        ],
+        "artefacts": [
+          "Quote composer"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Live price",
+          "Risk",
+          "Inventory"
+        ],
+        "models": [
+          "Pricing rec"
+        ],
+        "automations": [
+          "Guardrail validation"
+        ],
+        "risks": [
+          "Over-automation"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Overtrust"
+        ],
+        "nudges": [
+          "Confidence ranges"
+        ],
+        "frameworks": [
+          "Nudge"
+        ],
+        "habit": "Rep reviews rec & logs rationale"
+      },
+      "governance": {
+        "checks": [
+          "Pricing policy",
+          "Exception logging"
+        ],
+        "metrics": [
+          "TTFR",
+          "Quote-to-win %"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "systems",
+        "governance",
+        "value"
+      ],
+      "dpLevel": "integrated",
+      "kpis": {}
+    }
+  ],
+  "kpiConfig": {},
+  "comments": {}
+}

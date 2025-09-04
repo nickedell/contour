@@ -1,0 +1,25 @@
+# Ensure consistent line endings
+* text=auto eol=lf
+
+# Treat these as binary (no diffs)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mp4 binary
+*.mov binary
+*.woff binary
+*.woff2 binary
+
+# Syntax highlighting / linguist overrides
+*.ts   linguist-language=TypeScript
+*.tsx  linguist-language=TypeScript
+*.js   linguist-language=JavaScript
+*.css  linguist-language=CSS
+*.md   linguist-language=Markdown
+
+# Keep lockfiles diffable
+package-lock.json -diff
+yarn.lock -diff
+pnpm-lock.yaml -diff

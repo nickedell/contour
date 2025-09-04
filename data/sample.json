@@ -1,0 +1,162 @@
+{
+  "stages": [
+    {
+      "key": "D",
+      "label": "Discover",
+      "order": 1,
+      "color": "#7C3AED"
+    },
+    {
+      "key": "C",
+      "label": "Consider",
+      "order": 2,
+      "color": "#2563EB"
+    },
+    {
+      "key": "A",
+      "label": "Activate",
+      "order": 3,
+      "color": "#059669"
+    },
+    {
+      "key": "U",
+      "label": "Use",
+      "order": 4,
+      "color": "#D97706"
+    },
+    {
+      "key": "R",
+      "label": "Renew",
+      "order": 5,
+      "color": "#DC2626"
+    }
+  ],
+  "moments": [
+    {
+      "id": "D1",
+      "title": "Landing Page",
+      "stageKey": "D",
+      "column": 1,
+      "description": "Prospect arrives; clarity and proof matter.",
+      "experience": {
+        "personas": [
+          "Prospect"
+        ],
+        "jobsToBeDone": [
+          "Understand value"
+        ],
+        "momentsOfTruth": [
+          "Clarity",
+          "Proof"
+        ],
+        "artefacts": [
+          "LP",
+          "Explainer"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Referrer"
+        ],
+        "models": [
+          "Personalisation"
+        ],
+        "automations": [
+          "Variant select"
+        ],
+        "risks": [
+          "Overfitting"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skepticism"
+        ],
+        "nudges": [
+          "Social proof"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Clicks CTA"
+      },
+      "governance": {
+        "checks": [
+          "Claims"
+        ],
+        "metrics": [
+          "CTR"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "C1",
+      "title": "Pricing Calc",
+      "stageKey": "C",
+      "column": 3,
+      "description": "Evaluate ROI with a simple calculator.",
+      "experience": {
+        "personas": [
+          "Buyer"
+        ],
+        "jobsToBeDone": [
+          "See TCO"
+        ],
+        "momentsOfTruth": [
+          "Transparency"
+        ],
+        "artefacts": [
+          "Calc"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Firmographics"
+        ],
+        "models": [
+          "Propensity"
+        ],
+        "automations": [
+          "Reco"
+        ],
+        "risks": [
+          "Bias"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Analysis paralysis"
+        ],
+        "nudges": [
+          "Default bundle"
+        ],
+        "frameworks": [
+          "COM-B"
+        ],
+        "habit": "Saves config"
+      },
+      "governance": {
+        "checks": [
+          "Explainability"
+        ],
+        "metrics": [
+          "Demo requests"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    }
+  ]
+}
