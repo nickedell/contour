@@ -1,9 +1,15 @@
-[build]
-  command = "npm run build"
-  publish = ".next"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
 [build.environment]
-  NODE_VERSION = "20"
+    NODE_VERSION = "20.18.1"
+    NPM_CONFIG_AUDIT = "false" # optional speedup
+  
+  [build]
+    # we’ll set base below (monorepo). Command runs in that base dir.
+    command = "pnpm install --frozen-lockfile && pnpm build"
+    publish = ".next"
+  
+  # Ensure Corepack + pnpm before Netlify runs the build:
+  [build.lifecycle]
+    onInstall = "corepack enable && corepack prepare pnpm@9.10.0 --activate"
+  
+  [[plugins]]
+    package = "@netlify/plugin-nextjs"
