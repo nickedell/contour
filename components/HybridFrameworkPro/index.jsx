@@ -1,12 +1,7 @@
 // src/app/page.jsx (or wherever index.jsx is located)
 'use client';
 import { useMemo, useRef, useState, useEffect } from 'react';
-import {
-  ZoomIn,
-  ZoomOut,
-  Search,
-  RefreshCcw,
-} from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 
 import { getStages } from '@/lib/stages.js';
 import { filterMoments } from '@/lib/filter.js';
@@ -38,7 +33,10 @@ const LAYER_KEYS = ['service', 'experience', 'behaviour', 'systems', 'value', 'a
 
 export default function HybridFrameworkPro() {
   // --- Theme / layout ---
-  const [dark, setDark] = useState(false); // light by default
+  const [dark, setDark] = useState(false); // default updated from system in effect
+  const [followSystem, setFollowSystem] = useState(true);
+  const followSystemRef = useRef(true);
+
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(true);
   const [viewMode, setViewMode] = useState('journey'); // 'journey' | 'lens'
@@ -86,12 +84,59 @@ export default function HybridFrameworkPro() {
   const containerRef = useRef(null);
   const [dragging, setDragging] = useState({ active: false, id: null, startX: 0, startCol: 1 });
 
-  // Apply dark mode on <html> so everything (incl. modals) inverts properly
+  // Title + dark class application
+  useEffect(() => { document.title = 'Contour — Integrated System Map'; }, []);
   useEffect(() => {
     const root = document.documentElement;
     if (dark) root.classList.add('dark');
     else root.classList.remove('dark');
   }, [dark]);
+
+  // Pick up system theme by default, and live-update if user hasn’t overridden
+  useEffect(() => {
+    followSystemRef.current = followSystem;
+  }, [followSystem]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('hsm:prefs');
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+
+      if (raw) {
+        const prefs = JSON.parse(raw);
+        if (typeof prefs.dark === 'boolean') setDark(prefs.dark);
+        else setDark(mql.matches);
+
+        if (typeof prefs.followSystem === 'boolean') setFollowSystem(prefs.followSystem);
+        else setFollowSystem(true);
+
+        if (typeof prefs.commentMode === 'boolean') setCommentMode(prefs.commentMode);
+        if (typeof prefs.presentMode === 'boolean') setPresentMode(prefs.presentMode);
+        if (typeof prefs.leftOpen === 'boolean') setLeftOpen(prefs.leftOpen);
+        if (typeof prefs.currentUser === 'string') setCurrentUser(prefs.currentUser);
+        if (prefs.kpiConfig) setKpiConfig(prefs.kpiConfig);
+      } else {
+        setDark(mql.matches);
+        setFollowSystem(true);
+      }
+
+      const onChange = (e) => {
+        if (followSystemRef.current) setDark(e.matches);
+      };
+      if (mql.addEventListener) mql.addEventListener('change', onChange);
+      else mql.addListener(onChange);
+      return () => {
+        if (mql.removeEventListener) mql.removeEventListener('change', onChange);
+        else mql.removeListener(onChange);
+      };
+    } catch {}
+  }, []);
+
+  // Persist prefs (incl. followSystem)
+  useEffect(() => {
+    const prefs = { dark, commentMode, presentMode, leftOpen, currentUser, kpiConfig, followSystem };
+    localStorage.setItem('hsm:prefs', JSON.stringify(prefs));
+  }, [dark, commentMode, presentMode, leftOpen, currentUser, kpiConfig, followSystem]);
 
   // Zoom with Ctrl/⌘ + wheel
   useEffect(() => {
@@ -203,48 +248,19 @@ export default function HybridFrameworkPro() {
     if (selected === id) { setPanelOpen(false); setSelected(null); }
   };
 
-  // Persist prefs
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('hsm:prefs');
-      if (!raw) return;
-      const prefs = JSON.parse(raw);
-      if (typeof prefs.dark === 'boolean') setDark(prefs.dark);
-      if (typeof prefs.commentMode === 'boolean') setCommentMode(prefs.commentMode);
-      if (typeof prefs.presentMode === 'boolean') setPresentMode(prefs.presentMode);
-      if (typeof prefs.leftOpen === 'boolean') setLeftOpen(prefs.leftOpen);
-      if (typeof prefs.currentUser === 'string') setCurrentUser(prefs.currentUser);
-      if (prefs.kpiConfig) setKpiConfig(prefs.kpiConfig);
-    } catch {}
-  }, []);
-  useEffect(() => {
-    const prefs = { dark, commentMode, presentMode, leftOpen, currentUser, kpiConfig };
-    localStorage.setItem('hsm:prefs', JSON.stringify(prefs));
-  }, [dark, commentMode, presentMode, leftOpen, currentUser, kpiConfig]);
-  
+  // Ensure lens blocks
   const ensureLensBlocks = (m) => ({
     ...m,
-    experience: {
-      personas: [], jobsToBeDone: [], momentsOfTruth: [], artefacts: [],
-      ...(m.experience || {}),
-    },
-    ai: {
-      signals: [], models: [], automations: [], risks: [],
-      ...(m.ai || {}),
-    },
-    behaviour: {
-      barriers: [], nudges: [], frameworks: [], habit: '',
-      ...(m.behaviour || {}),
-    },
-    governance: {
-      checks: [], metrics: [],
-      ...(m.governance || {}),
-    },
+    experience: { personas: [], jobsToBeDone: [], momentsOfTruth: [], artefacts: [], ...(m.experience || {}) },
+    ai:         { signals: [], models: [], automations: [], risks: [], ...(m.ai || {}) },
+    behaviour:  { barriers: [], nudges: [], frameworks: [], habit: '', ...(m.behaviour || {}) },
+    governance: { checks: [], metrics: [], ...(m.governance || {}) },
   });
 
   return (
     <div className={dark ? 'dark' : ''}>
-      <div className="bg-white text-black dark:bg-neutral-950 dark:text-neutral-100 transition-colors">
+      {/* Deep grey page bg in dark mode */}
+      <div className="bg-white text-black dark:bg-[#121417] dark:text-neutral-100 transition-colors">
         {/* Brand header (present mode) */}
         {presentMode && (
           <div className="print:hidden">
@@ -252,208 +268,207 @@ export default function HybridFrameworkPro() {
           </div>
         )}
 
-        {/* Header */}
-        <header className="sticky top-0 z-30 border-b border-neutral-200 dark:border-neutral-800 backdrop-blur bg-white/70 dark:bg-neutral-950/70">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            {/* Title row */}
-            <div className="flex items-center gap-3">
-              {/* LEFT TAB (open left drawer) — hide when open */}
-              {!leftOpen && (
-                <button
-                  onClick={() => setLeftOpen(true)}
-                  className="h-7 w-7 -ml-1 flex items-center justify-center rounded-md bg-white/90 text-neutral-900 dark:bg-neutral-900/90 dark:text-neutral-100 shadow-sm hover:bg-white dark:hover:bg-neutral-900 transition focus:outline-none"
-                  title="Open left panel"
-                  aria-label="Open left panel"
-                >
-                  {'>'}
-                </button>
-              )}
+        {/* Header (padding-free wrapper for flush chevrons) */}
+        <header className="sticky top-0 z-30 border-b border-neutral-200 dark:border-neutral-800 backdrop-blur bg-white/70 dark:bg-[#121417]/70">
+          <div className="relative">
+            {/* Left chevron: flush to viewport edge */}
+            {!leftOpen && (
+              <button
+                onClick={() => setLeftOpen(true)}
+                className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-md bg-white/90 text-neutral-900 dark:bg-neutral-900/90 dark:text-neutral-100 shadow-sm hover:bg-white dark:hover:bg-neutral-900 transition focus:outline-none z-40"
+                title="Open left panel"
+                aria-label="Open left panel"
+              >
+                {'>'}
+              </button>
+            )}
 
-              <h1 className="text-lg md:text-xl font-bold tracking-widest uppercase whitespace-nowrap">
-                Service / Opportunity Map - Value, AI, Behaviour + Governance
-              </h1>
+            {/* Right chevron: flush to viewport edge */}
+            {!settingsOpen && (
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-md bg-white/90 text-neutral-900 dark:bg-neutral-900/90 dark:text-neutral-100 shadow-sm hover:bg-white dark:hover:bg-neutral-900 transition focus:outline-none z-40"
+                title="Open settings"
+                aria-label="Open settings"
+              >
+                {'<'}
+              </button>
+            )}
 
-              <div className="ml-auto flex items-center gap-2">
-                {/* RIGHT TAB (open settings) — hide when open */}
-                {!settingsOpen && (
+            {/* Inner padded container */}
+            <div className="max-w-7xl mx-auto px-4 py-3">
+              {/* Title row */}
+              <div className="flex items-center gap-3">
+                <h1 className="text-lg md:text-xl font-bold tracking-widest uppercase whitespace-nowrap">
+                  Contour — Integrated System Map
+                </h1>
+              </div>
+
+              {/* Controls row */}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {/* View mode (Journey / Perspectives) + inline theme toggle */}
+                <div className="flex items-center gap-1 border border-neutral-300 dark:border-neutral-700 rounded-md overflow-hidden">
                   <button
-                    onClick={() => setSettingsOpen(true)}
-                    className="h-7 w-7 flex items-center justify-center rounded-md bg-white/90 text-neutral-900 dark:bg-neutral-900/90 dark:text-neutral-100 shadow-sm hover:bg-white dark:hover:bg-neutral-900 transition focus:outline-none"
-                    title="Open settings"
-                    aria-label="Open settings"
+                    onClick={() => setViewMode('journey')}
+                    className={`px-2 py-1.5 text-sm ${viewMode === 'journey' ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : ''}`}
+                    title="Journey view"
                   >
-                    {'<'}
+                    Journey
                   </button>
-                )}
+                  <button
+                    onClick={() => setViewMode('lens')}
+                    className={`px-2 py-1.5 text-sm ${viewMode === 'lens' ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : ''}`}
+                    title="Lenses view"
+                  >
+                    Perspectives
+                  </button>
 
-                {/* Theme toggle (text only) */}
-                <button
-                  onClick={() => setDark((d) => !d)}
-                  className="h-7 px-2 text-xs font-medium rounded-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-                  title="Toggle theme"
-                >
-                  {dark ? 'Light' : 'Dark'}
-                </button>
-              </div>
-            </div>
-
-            {/* Controls row */}
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              {/* View mode */}
-              <div className="flex items-center gap-1 border border-neutral-300 dark:border-neutral-700 rounded-md overflow-hidden">
-                <button
-                  onClick={() => setViewMode('journey')}
-                  className={`px-2 py-1.5 text-sm ${viewMode === 'journey' ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : ''}`}
-                  title="Journey view"
-                >
-                  Journey
-                </button>
-                <button
-                  onClick={() => setViewMode('lens')}
-                  className={`px-2 py-1.5 text-sm ${viewMode === 'lens' ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : ''}`}
-                  title="Lenses view"
-                >
-                  Perspectives
-                </button>
-              </div>
-
-              {/* Dataset selector */}
-              <select
-                value={data?.__name || 'marine'}
-                onChange={async (e) => {
-                  const v = e.target.value;
-                  if (v === 'marine')      { const mod = await import('@/data/marine.json'); setData({ ...mod.default, __name: 'marine' }); }
-                  else if (v === 'sample') { const mod = await import('@/data/sample.json'); setData({ ...mod.default, __name: 'sample' }); }
-                  else if (v === 'theory') { const mod = await import('@/data/theory.json'); setData({ ...mod.default, __name: 'theory' }); }
-                  else if (v === 'upload') { fileInputRef.current?.click(); }
-                }}
-                className="px-2 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
-                title="Switch dataset"
-              >
-                <option value="marine">Marine</option>
-                <option value="sample">Sample</option>
-                <option value="theory">Theory</option>
-                <option value="upload">Upload…</option>
-              </select>
-
-              {/* Search */}
-              <div className="relative">
-                <input
-                  type="search"
-                  placeholder="Search moments, signals, nudges…"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="pl-3 pr-3 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
-                />
-              </div>
-
-              {/* Import/Export */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (!f) return;
-                const r = new FileReader();
-                r.onload = () => {
-                  try {
-                    const obj = JSON.parse(r.result);
-                    if (!obj || !Array.isArray(obj.moments)) {
-                      throw new Error('Invalid JSON: expected { moments: [] }');
-                    }
-                    const normalized = {
-                      ...obj,
-                      moments: (obj.moments || []).map(ensureLensBlocks),
-                    };
-                    setData({ ...normalized, __name: 'upload' });
-                  } catch (err) {
-                    alert('Import failed: ' + err.message);
-                  }
-                };
-                r.readAsText(f);
-                e.target.value = '';
-              }}
-
-              />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-2 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
-              >
-                Import
-              </button>
-              <button
-                onClick={() => {
-                  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'dataset.json';
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }}
-                className="px-2 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
-              >
-                Export
-              </button>
-
-              {/* Zoom */}
-              <div className="hidden md:flex items-center gap-1 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden">
-                <button
-                  onClick={() => setZoom((z) => Math.max(0.5, parseFloat((z - 0.1).toFixed(2))))}
-                  className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                  title="Zoom out"
-                >
-                  −
-                </button>
-                <div className="px-2 text-xs tabular-nums min-w-[3.5rem] text-center">
-                  {(zoom * 100).toFixed(0)}%
+                  {/* Theme toggle lives on the same row */}
+                  <button
+                    onClick={() => { setDark((d) => !d); setFollowSystem(false); }}
+                    className="ml-1 px-2 py-1.5 text-sm font-medium border-l border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    title="Toggle theme"
+                  >
+                    {dark ? 'Light' : 'Dark'}
+                  </button>
                 </div>
-                <button
-                  onClick={() => setZoom((z) => Math.min(2.5, parseFloat((z + 0.1).toFixed(2))))}
-                  className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                  title="Zoom in"
+
+                {/* Dataset selector */}
+                <select
+                  value={data?.__name || 'marine'}
+                  onChange={async (e) => {
+                    const v = e.target.value;
+                    if (v === 'marine')      { const mod = await import('@/data/marine.json'); setData({ ...mod.default, __name: 'marine' }); }
+                    else if (v === 'sample') { const mod = await import('@/data/sample.json'); setData({ ...mod.default, __name: 'sample' }); }
+                    else if (v === 'theory') { const mod = await import('@/data/theory.json'); setData({ ...mod.default, __name: 'theory' }); }
+                    else if (v === 'upload') { fileInputRef.current?.click(); }
+                  }}
+                  className="px-2 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+                  title="Switch dataset"
                 >
-                  +
+                  <option value="marine">Marine</option>
+                  <option value="sample">Sample</option>
+                  <option value="theory">Theory</option>
+                  <option value="upload">Upload…</option>
+                </select>
+
+                {/* Search */}
+                <div className="relative">
+                  <input
+                    type="search"
+                    placeholder="Search moments, signals, nudges…"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="pl-3 pr-3 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+                  />
+                </div>
+
+                {/* Import/Export */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="application/json"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (!f) return;
+                    const r = new FileReader();
+                    r.onload = () => {
+                      try {
+                        const obj = JSON.parse(r.result);
+                        if (!obj || !Array.isArray(obj.moments)) {
+                          throw new Error('Invalid JSON: expected { moments: [] }');
+                        }
+                        const normalized = {
+                          ...obj,
+                          moments: (obj.moments || []).map(ensureLensBlocks),
+                        };
+                        setData({ ...normalized, __name: 'upload' });
+                      } catch (err) {
+                        alert('Import failed: ' + err.message);
+                      }
+                    };
+                    r.readAsText(f);
+                    e.target.value = '';
+                  }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-2 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                >
+                  Import
                 </button>
                 <button
-                  onClick={() => setZoom(1)}
-                  className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800"
-                  title="Reset view"
+                  onClick={() => {
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'dataset.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="px-2 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                 >
-                  <RefreshCcw className="h-4 w-4 inline-block align-[-2px]" />
+                  Export
                 </button>
+
+                {/* Zoom */}
+                <div className="hidden md:flex items-center gap-1 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden">
+                  <button
+                    onClick={() => setZoom((z) => Math.max(0.5, parseFloat((z - 0.1).toFixed(2))))}
+                    className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    title="Zoom out"
+                  >
+                    −
+                  </button>
+                  <div className="px-2 text-xs tabular-nums min-w-[3.5rem] text-center">
+                    {(zoom * 100).toFixed(0)}%
+                  </div>
+                  <button
+                    onClick={() => setZoom((z) => Math.min(2.5, parseFloat((z + 0.1).toFixed(2))))}
+                    className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    title="Zoom in"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => setZoom(1)}
+                    className="px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800"
+                    title="Reset view"
+                  >
+                    <RefreshCcw className="h-4 w-4 inline-block align-[-2px]" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </header>
 
-       {/* Perspectives pill bar (sticky under the main header) */}
-       {/* The `top` value should be the height of the header. It might need adjustment if the header height changes. */}
-       <div className="sticky top-[89px] md:top-[81px] z-20 bg-white/70 dark:bg-neutral-950/70 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
-         <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center gap-2">
-           <span className="uppercase tracking-widest text-xs text-neutral-500">Perspectives</span>
-           {lanes.map((ln) => {
-             const disabled = viewMode === 'journey';
-             return (
-               <button
-                 key={ln.key}
-                 onClick={() => !disabled && setVisibleLanes(v => ({ ...v, [ln.key]: !v[ln.key] }))}
-                 disabled={disabled}
-                 className={`px-3 py-1.5 text-xs font-medium rounded-full border transition
-                   ${visibleLanes[ln.key]
-                     ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 border-neutral-900 dark:border-neutral-100'
-                     : 'bg-transparent text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-700'}
-                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100 dark:hover:bg-neutral-900'}`}
-                 title={disabled ? 'Perspectives are controlled in Lenses view' : `Toggle ${ln.label}`}
-               >
-                 {ln.label}
-               </button>
-             );
-           })}
-         </div>
-       </div>
+        {/* Perspectives pill bar (sticky under the main header) */}
+        <div className="sticky top-[89px] md:top-[81px] z-20 bg-white/70 dark:bg-[#121417]/70 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
+          <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center gap-2">
+            <span className="uppercase tracking-widest text-xs text-neutral-500">Perspectives</span>
+            {lanes.map((ln) => {
+              const disabled = viewMode === 'journey';
+              return (
+                <button
+                  key={ln.key}
+                  onClick={() => !disabled && setVisibleLanes(v => ({ ...v, [ln.key]: !v[ln.key] }))}
+                  disabled={disabled}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition
+                    ${visibleLanes[ln.key]
+                      ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 border-neutral-900 dark:border-neutral-100'
+                      : 'bg-transparent text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-700'}
+                    ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100 dark:hover:bg-neutral-900'}`}
+                  title={disabled ? 'Perspectives are controlled in Lenses view' : `Toggle ${ln.label}`}
+                >
+                  {ln.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* LEFT DRAWER BACKDROP — greys out main content */}
         {leftOpen && (
@@ -466,7 +481,7 @@ export default function HybridFrameworkPro() {
 
         {/* Left Intro / Filters Panel */}
         <aside
-          className={`fixed inset-y-0 left-0 w-[320px] bg-white dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800 z-50 p-4 overflow-y-auto transform transition-transform duration-300 ${
+          className={`fixed inset-y-0 left-0 w-[320px] bg-white dark:bg-[#121417] border-r border-neutral-200 dark:border-neutral-800 z-50 p-4 overflow-y-auto transform transition-transform duration-300 ${
             leftOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -484,17 +499,16 @@ export default function HybridFrameworkPro() {
           </div>
 
           {/* Intro */}
-         <div className="mb-6">
-           <h3 className="text-base font-semibold mb-2">What you’re seeing</h3>
-           <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
-             A value-led service map viewed through four <b>Perspectives</b> —
-             <b> Value &amp; Experience</b>, <b>AI &amp; Data</b>, <b>Behavioural Adoption</b>, and <b>Governance &amp; Risk</b>.
-             Use the left drawer to filter by <b>Capability Layers</b> (what the moment touches), and use the
-             <b> Perspectives</b> bar to show/hide sections when you switch to Perspectives view.
-             Import your blueprint/personas via the header controls, then explore.
-           </p>
-         </div>
-
+          <div className="mb-6">
+            <h3 className="text-base font-semibold mb-2">What you’re seeing</h3>
+            <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+              A value-led service map viewed through four <b>Perspectives</b> —
+              <b> Value &amp; Experience</b>, <b>AI &amp; Data</b>, <b>Behavioural Adoption</b>, and <b>Governance &amp; Risk</b>.
+              Use the left drawer to filter by <b>Capability Layers</b> (what the moment touches), and use the
+              <b> Perspectives</b> bar to show/hide sections when you switch to Perspectives view.
+              Import your blueprint/personas via the header controls, then explore.
+            </p>
+          </div>
 
           {/* Layers */}
           <div className="mb-6">
@@ -569,18 +583,17 @@ export default function HybridFrameworkPro() {
           <div style={{ transform: `scale(${zoom})`, transformOrigin: '0 0' }}>
             <div className="relative w-[1600px] mx-20 mt-2 mb-0 pb-6">
               {viewMode === 'journey' ? (
-              <JourneyTrack
-                moments={filteredMoments}
-                stages={stages}
-                onOpen={(id) => { setSelected(id); setPanelOpen(true); }}
-                enableDrag={false}
-                onDragStart={handleDragStart}
-                kpiKey={kpiKey}
-                heatmapOn={heatmapOn}
-                kpiConfig={kpiConfig}
-                showRail={false}
-              />
-
+                <JourneyTrack
+                  moments={filteredMoments}
+                  stages={stages}
+                  onOpen={(id) => { setSelected(id); setPanelOpen(true); }}
+                  enableDrag={false}
+                  onDragStart={handleDragStart}
+                  kpiKey={kpiKey}
+                  heatmapOn={heatmapOn}
+                  kpiConfig={kpiConfig}
+                  showRail={false}
+                />
               ) : (
                 <LensGrid
                   lanes={lanes}
