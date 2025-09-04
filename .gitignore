@@ -46,3 +46,9 @@ Thumbs.db
 apps/**/.next/
 apps/**/dist/
 packages/**/dist/
+
+# editor/OS copies
+* copy.*
+* copy-*
+*- copy.*
+
