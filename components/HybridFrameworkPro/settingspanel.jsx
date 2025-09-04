@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
- 
+
 export default function SettingsPanel({
   open, onClose,
   commentMode, setCommentMode,
