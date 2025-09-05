@@ -218,6 +218,10 @@ export default function HybridFrameworkPro() {
   const fileInputRef = useRef(null);
   const containerRef = useRef(null);
   const [dragging, setDragging] = useState({ active: false, id: null, startX: 0, startCol: 1 });
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-left', leftOpen ? 'open' : 'closed');
+  }, [l
 
   // Title + theme class
   useEffect(() => { document.title = 'Contour — Integrated System Map'; }, []);
@@ -425,6 +429,8 @@ export default function HybridFrameworkPro() {
                 {'>'}
               </button>
             )}
+           
+            
 
             {/* Right open chevron — flush and high */}
             {!settingsOpen && (
@@ -632,11 +638,12 @@ export default function HybridFrameworkPro() {
         )}
 
         {/* Left Intro / Filters Panel */}
-        <aside
-          className={`fixed inset-y-0 left-0 w-[320px] bg-white dark:bg-[#121417] border-r border-neutral-200 dark:border-neutral-800 z-50 p-4 overflow-y-auto transform transition-transform duration-300 ${
-            leftOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
+      <aside
+        className={`left-drawer fixed inset-y-0 left-0 w-[320px] bg-white dark:bg-[#121417]
+          border-r border-neutral-200 dark:border-neutral-800 z-50 p-4 overflow-y-auto
+          transform transition-transform duration-300
+          ${leftOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
           {/* Drawer header */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold uppercase tracking-widest">Overview & Filters</h2>
