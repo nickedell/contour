@@ -221,8 +221,8 @@ export default function HybridFrameworkPro() {
   
   useEffect(() => {
     document.documentElement.setAttribute('data-left', leftOpen ? 'open' : 'closed');
-  }, [l
-
+  }, [leftOpen]);
+  
   // Title + theme class
   useEffect(() => { document.title = 'Contour — Integrated System Map'; }, []);
   useEffect(() => {
