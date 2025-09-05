@@ -1,7 +1,7 @@
+// components/HybridFrameworkPro/SidePanel/SidePanel.jsx
 import { X } from 'lucide-react';
 import CommentsPanel from '../CommentsPanel';
 
-// Self-contained Section + KeyVal to avoid missing imports
 function Section({ title, dotClass, children }) {
   return (
     <section>
@@ -38,8 +38,40 @@ export default function SidePanel({
   onDeleteComment,
   currentUser,
   presentMode,
+  stages = [],
+  viewMode = 'journey',          // ✅ NEW
+  visibleLanes = {},             // ✅ NEW
 }) {
-  const stageLabel = moment.stage || moment.stageKey || '—';
+  // Resolve full stage title for this moment (fallbacks to moment.stage or key)
+  const stageKey = moment.stageKey || moment.stage;
+  const resolvedStage = (stages || []).find((s) => s.key === stageKey);
+  const stageTitle =
+    (resolvedStage && (resolvedStage.title || resolvedStage.label)) ||
+    (typeof moment.stage === 'string' ? moment.stage : stageKey) ||
+    '—';
+
+  // Perspective gating
+  const inLens = viewMode === 'lens';
+  const vis = {
+    experience: true,
+    ai: true,
+    behaviour: true,
+    governance: true,
+    ...(visibleLanes || {}),
+  };
+
+  const showExperience = !inLens || !!vis.experience;
+  const showAI         = !inLens || !!vis.ai;
+  const showBehaviour  = !inLens || !!vis.behaviour;
+  const showGovernance = !inLens || !!vis.governance;
+
+  // If in Lens view and nothing is selected, show a gentle hint
+  const nothingVisibleInLens =
+    inLens &&
+    !vis.experience &&
+    !vis.ai &&
+    !vis.behaviour &&
+    !vis.governance;
 
   return (
     <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] md:w-[560px] bg-white dark:bg-neutral-950 border-l border-neutral-200 dark:border-neutral-800 z-40 shadow-xl">
@@ -74,17 +106,23 @@ export default function SidePanel({
       )}
 
       {/* Content */}
-      <div className="p-4 space-y-6 overflow-y-auto h-[calc(100%-6rem)]">
+      <div className="p-4 space-y-6 overflow-y-auto h=[calc(100%-6rem)]">
         <header>
-          <div className="text-[10px] uppercase tracking-widest text-neutral-400">{stageLabel}</div>
+          <div className="text-[10px] uppercase tracking-widest text-neutral-400">{stageTitle}</div>
           <h3 className="text-xl font-semibold mt-1">{moment.title}</h3>
           {moment.description && (
             <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">{moment.description}</p>
           )}
         </header>
 
+        {nothingVisibleInLens && (
+          <div className="text-xs text-neutral-500">
+            No perspectives selected. Toggle one or more in the Perspectives bar to view details here.
+          </div>
+        )}
+
         {/* Value & Experience */}
-        {moment.experience && (
+        {showExperience && moment.experience && (
           <Section title="Value & Experience" dotClass="bg-emerald-500">
             {moment.experience.personas?.length > 0 && (
               <KeyVal k="Personas" v={moment.experience.personas.join(', ')} />
@@ -102,7 +140,7 @@ export default function SidePanel({
         )}
 
         {/* AI & Data */}
-        {moment.ai && (
+        {showAI && moment.ai && (
           <Section title="AI & Data" dotClass="bg-sky-500">
             {moment.ai.signals?.length > 0 && <KeyVal k="Signals" v={moment.ai.signals.join(', ')} />}
             {moment.ai.models?.length > 0 && <KeyVal k="Models" v={moment.ai.models.join(', ')} />}
@@ -114,7 +152,7 @@ export default function SidePanel({
         )}
 
         {/* Behavioural Adoption */}
-        {moment.behaviour && (
+        {showBehaviour && moment.behaviour && (
           <Section title="Behavioural Adoption" dotClass="bg-amber-500">
             {moment.behaviour.barriers?.length > 0 && (
               <KeyVal k="Barriers" v={moment.behaviour.barriers.join(', ')} />
@@ -130,7 +168,7 @@ export default function SidePanel({
         )}
 
         {/* Governance & Risk */}
-        {moment.governance && (
+        {showGovernance && moment.governance && (
           <Section title="Governance & Risk" dotClass="bg-rose-500">
             {moment.governance.checks?.length > 0 && (
               <KeyVal k="Checks" v={moment.governance.checks.join(', ')} />

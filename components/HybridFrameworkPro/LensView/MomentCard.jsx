@@ -1,51 +1,57 @@
-import { Info } from 'lucide-react';
+// components/HybridFrameworkPro/LensView/MomentCard.jsx
+import React from 'react';
 
-const laneStyles = {
-  experience: { border: 'border-emerald-300/60 dark:border-emerald-500/50', dot: 'bg-emerald-500' },
-  ai:         { border: 'border-sky-300/60 dark:border-sky-500/50',         dot: 'bg-sky-500' },
-  behaviour:  { border: 'border-amber-300/60 dark:border-amber-500/50',     dot: 'bg-amber-500' },
-  governance: { border: 'border-rose-300/60 dark:border-rose-500/50',       dot: 'bg-rose-500' },
-};
-
-import { getNormalizedKpiValue } from '@/lib/kpi.js';
-
-export default function MomentCard({ lane, moment, onOpen, kpiKey, heatmapOn, kpiConfig }) {
-  const styles = laneStyles[lane] || laneStyles.experience;
-  const colStart = Math.min(12, Math.max(1, moment.column || 1));
-
-  const v = heatmapOn ? getNormalizedKpiValue(moment, kpiKey, kpiConfig) : null;
-  const tint = v==null ? '' :
-    v > 0.75 ? 'ring-2 ring-emerald-500/70 bg-emerald-500/10' :
-    v > 0.5  ? 'ring-2 ring-emerald-400/60 bg-emerald-400/10' :
-    v > 0.25 ? 'ring-2 ring-amber-400/60 bg-amber-400/10' :
-               'ring-2 ring-rose-400/60 bg-rose-400/10';
-
-  const summary = (() => {
-    if (lane === 'experience' && moment.experience?.momentsOfTruth) return moment.experience.momentsOfTruth.join(' • ');
-    if (lane === 'ai' && moment.ai?.models) return moment.ai.models.join(', ');
-    if (lane === 'behaviour' && moment.behaviour?.nudges) return moment.behaviour.nudges.join(', ');
-    if (lane === 'governance' && moment.governance?.checks) return moment.governance.checks.join(', ');
-    return moment.description || '';
-  })();
+export default function MomentCard({
+  lane,
+  moment,
+  stageLabel,          // ✅ full title from LensGrid
+  onOpen,
+  kpiKey,
+  heatmapOn,
+  kpiConfig,
+}) {
+  const heat = getHeat(moment, kpiKey, kpiConfig);
 
   return (
     <div
-      className={`col-span-2 min-h-[90px] rounded-xl border ${styles.border} bg-white dark:bg-neutral-950/70 hover:shadow transition group cursor-pointer ${tint}`}
-      style={{ gridColumnStart: colStart }}
-      onClick={() => onOpen(moment.id)}
-      title={moment.title}
+      className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm hover:shadow transition cursor-pointer"
+      onClick={() => onOpen?.(moment.id)}
+      title={`${moment.title}${stageLabel ? ' — ' + stageLabel : ''}`}
     >
       <div className="p-3">
         <div className="flex items-center justify-between">
-          <div className={`h-2 w-2 rounded-full ${styles.dot}`} />
-          <span className="text-[10px] uppercase tracking-widest text-neutral-400">{moment.stage || moment.stageKey}</span>
+          {/* Left lozenge = full stage title (NOT the letter) */}
+          <span className="inline-flex h-5 px-2 items-center justify-center rounded-full text-[11px] font-medium border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100 whitespace-nowrap">
+            {stageLabel}
+          </span>
+          {/* Keep whatever you had on the right, or leave blank */}
         </div>
-        <h3 className="mt-2 font-semibold text-sm leading-tight">{moment.title}</h3>
-        <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2">{summary}</p>
-        <div className="mt-2 text-[10px] text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-300 flex items-center gap-1">
-          <Info className="h-3 w-3" /> Details
-        </div>
+
+        <h4 className="mt-2 font-semibold text-sm leading-tight">{moment.title}</h4>
+
+        {moment.experience?.momentsOfTruth?.length ? (
+          <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2">
+            {moment.experience.momentsOfTruth.join(' • ')}
+          </p>
+        ) : null}
+
+        {heat > 0 && (
+          <div className="mt-2 h-[6px] rounded bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+            <div className="h-full bg-neutral-700 dark:bg-neutral-200" style={{ width: `${Math.min(100, heat)}%` }} />
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+function getHeat(moment, kpiKey, kpiConfig) {
+  if (!kpiKey || !heatmapOnEnabled) return 0;
+  const val = Number(moment?.metrics?.[kpiKey] ?? 0);
+  return isFinite(val) ? val * 100 : 0;
+}
+
+// simple guard if props are omitted
+function heatmapOnEnabled(flag) {
+  return typeof flag === 'boolean' ? flag : false;
 }

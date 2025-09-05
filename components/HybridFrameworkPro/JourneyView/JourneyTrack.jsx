@@ -1,11 +1,7 @@
-// src/components/JourneyView/JourneyTrack.jsx
+// components/HybridFrameworkPro/JourneyView/JourneyTrack.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import StageRail from './StageRail';
 
-/**
- * JourneyTrack — stages as columns left→right; moments stack top→bottom.
- * Props: stages, moments, onOpen, enableDrag=false, onDragStart, kpiKey, heatmapOn, kpiConfig, showRail
- */
 export default function JourneyTrack({
   stages = [],
   moments = [],
@@ -17,8 +13,8 @@ export default function JourneyTrack({
   kpiConfig,
   showRail = true,
 }) {
-  // group by stageKey
-  const byStage = Object.fromEntries(stages.map((s) => [s.key, []]));
+  // group moments by stageKey
+  const byStage = Object.fromEntries((stages || []).map((s) => [s.key, []]));
   for (const m of moments) {
     const k = m.stageKey || m.stage;
     (byStage[k] ||= []).push(m);
@@ -30,7 +26,7 @@ export default function JourneyTrack({
     );
   });
 
-  // track refs for each stage + active highlight for rail
+  // stage visibility helpers (rail highlight)
   const stageRefs = useRef({});
   const [active, setActive] = useState(stages?.[0]?.key);
 
@@ -62,59 +58,66 @@ export default function JourneyTrack({
   const scrollToStage = (key) => {
     const el = stageRefs.current[key];
     if (!el) return;
-    const x = el.getBoundingClientRect().left + window.scrollX - 24; // left padding offset
+    const x = el.getBoundingClientRect().left + window.scrollX - 24;
     window.scrollTo({ left: x, behavior: 'smooth' });
+  };
+
+  // A, B, C… (fallback: derive from order or index)
+  const letterFor = (stage, idx) => {
+    const pos = Number.isFinite(Number(stage?.order)) && Number(stage.order) > 0
+      ? Number(stage.order) - 1
+      : idx;
+    return String.fromCharCode(65 + (pos % 26)); // 0->A
   };
 
   return (
     <div className="relative">
-      {showRail && (
-        <StageRail stages={stages} active={active} onJump={scrollToStage} />
-      )}
+      {showRail && <StageRail stages={stages} active={active} onJump={scrollToStage} />}
 
-      {/* Columns — Added mt-6 for spacing below sticky header */}
       <div
         className="grid gap-6 px-4 mt-6"
-        style={{
-          gridTemplateColumns: `repeat(${stages.length || 1}, minmax(280px, 1fr))`,
-        }}
+        style={{ gridTemplateColumns: `repeat(${stages.length || 1}, minmax(280px, 1fr))` }}
       >
-        {stages.map((stage) => (
-          <section
-            key={stage.key}
-            ref={(el) => (stageRefs.current[stage.key] = el)}
-            className="relative scroll-mt-[140px]" // aligns column top below both sticky bars when jumped to
-          >
-            {/* Column header - NOT sticky anymore */}
-            <div
-              className="border-b border-neutral-200 dark:border-neutral-800 px-2 py-2"
-            >
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-6 px-2 items-center justify-center rounded-full text-[11px] font-bold border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100">
-                  {stage.letter}
-                </span>
-                <h3 className="text-sm font-semibold">{stage.label}</h3>
-              </div>
-            </div>
+        {stages.map((stage, idx) => {
+          const stageLetter = stage.letter || letterFor(stage, idx);
+          const stageTitle  = stage.title || stage.label || stage.key;
 
-            {/* moments stack — pt-5 provides spacing below the header */}
-            <div className="pt-5 space-y-3">
-              {(byStage[stage.key] || []).map((m) => (
-                <MomentCard
-                  key={m.id}
-                  moment={m}
-                  stageLetter={stage.letter}
-                  onOpen={onOpen}
-                  enableDrag={enableDrag}
-                  onDragStart={onDragStart}
-                  kpiKey={kpiKey}
-                  heatmapOn={heatmapOn}
-                  kpiConfig={kpiConfig}
-                />
-              ))}
-            </div>
-          </section>
-        ))}
+          return (
+            <section
+              key={stage.key}
+              ref={(el) => (stageRefs.current[stage.key] = el)}
+              className="relative scroll-mt-[140px]"
+            >
+              {/* Column header */}
+              <div className="border-b border-neutral-200 dark:border-neutral-800 px-2 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-6 px-2 items-center justify-center rounded-full text-[11px] font-bold border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100">
+                    {stageLetter}
+                  </span>
+                  <h3 className="text-sm font-semibold">{stageTitle}</h3>
+                </div>
+              </div>
+
+              {/* Moments */}
+              <div className="pt-5 space-y-3">
+                {(byStage[stage.key] || []).map((m) => (
+                  <MomentCard
+                    key={m.id}
+                    moment={m}
+                    stageLetter={stageLetter}
+                    stageTitle={stageTitle}
+                    onOpen={onOpen}
+                    enableDrag={enableDrag}
+                    onDragStart={onDragStart}
+                    kpiKey={kpiKey}
+                    heatmapOn={heatmapOn}
+                    kpiConfig={kpiConfig}
+                  />
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </div>
   );
@@ -123,6 +126,7 @@ export default function JourneyTrack({
 function MomentCard({
   moment,
   stageLetter,
+  stageTitle,
   onOpen,
   enableDrag,
   onDragStart,
@@ -139,24 +143,22 @@ function MomentCard({
     <div
       className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm hover:shadow transition cursor-pointer"
       onClick={() => onOpen?.(moment.id)}
-      onMouseDown={(e) => {
-        if (enableDrag) onDragStart?.(e, moment);
-      }}
-      title={`${moment.title} — ${moment.stage || moment.stageKey}`}
+      onMouseDown={(e) => { if (enableDrag) onDragStart?.(e, moment); }}
+      title={`${moment.title} — ${stageTitle}`}
     >
       <div className="p-3">
         <div className="flex items-center justify-between">
+          {/* top-left: column letter */}
           <span className="inline-flex h-5 px-2 items-center justify-center rounded-full text-[11px] font-bold border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100">
             {stageLetter}
           </span>
+          {/* top-right: section title (full word, small caps) */}
           <span className="text-[10px] uppercase tracking-widest text-neutral-400">
-            {moment.stage || moment.stageKey}
+            {stageTitle}
           </span>
         </div>
 
-        <h4 className="mt-2 font-semibold text-sm leading-tight">
-          {moment.title}
-        </h4>
+        <h4 className="mt-2 font-semibold text-sm leading-tight">{moment.title}</h4>
 
         {moment.experience?.momentsOfTruth?.length ? (
           <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2">
@@ -166,10 +168,7 @@ function MomentCard({
 
         {heat > 0 && (
           <div className="mt-2 h-[6px] rounded bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
-            <div
-              className="h-full bg-neutral-700 dark:bg-neutral-200"
-              style={{ width: `${Math.min(100, heat)}%` }}
-            />
+            <div className="h-full bg-neutral-700 dark:bg-neutral-200" style={{ width: `${Math.min(100, heat)}%` }} />
           </div>
         )}
       </div>

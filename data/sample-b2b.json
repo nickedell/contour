@@ -1,0 +1,1330 @@
+{
+  "stages": [
+    {
+      "key": "D",
+      "label": "Discover",
+      "order": 1,
+      "color": "#7C3AED"
+    },
+    {
+      "key": "C",
+      "label": "Consider",
+      "order": 2,
+      "color": "#2563EB"
+    },
+    {
+      "key": "A",
+      "label": "Activate",
+      "order": 3,
+      "color": "#059669"
+    },
+    {
+      "key": "U",
+      "label": "Use",
+      "order": 4,
+      "color": "#D97706"
+    },
+    {
+      "key": "R",
+      "label": "Renew",
+      "order": 5,
+      "color": "#DC2626"
+    }
+  ],
+  "moments": [
+    {
+      "id": "D1",
+      "title": "LinkedIn Thought Leadership",
+      "stageKey": "D",
+      "column": 1,
+      "description": "Prospect analyst finds a post benchmarking peers; curiosity triggered.",
+      "experience": {
+        "personas": [
+          "Analyst",
+          "Ops Manager"
+        ],
+        "jobsToBeDone": [
+          "Assess fit quickly"
+        ],
+        "momentsOfTruth": [
+          "Relevance",
+          "Authority"
+        ],
+        "artefacts": [
+          "Post",
+          "Benchmark PDF"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "UTM source",
+          "Company size"
+        ],
+        "models": [
+          "Topic affinity"
+        ],
+        "automations": [
+          "Audience retargeting"
+        ],
+        "risks": [
+          "Over-personalisation"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skepticism"
+        ],
+        "nudges": [
+          "Peer stats",
+          "Logos"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Clicks through"
+      },
+      "governance": {
+        "checks": [
+          "Claims substantiation"
+        ],
+        "metrics": [
+          "CTR",
+          "Time on page"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "D2",
+      "title": "Landing Page (Vertical)",
+      "stageKey": "D",
+      "column": 2,
+      "description": "Vertical-specific page with value props and customer quotes.",
+      "experience": {
+        "personas": [
+          "Buyer",
+          "Champion"
+        ],
+        "jobsToBeDone": [
+          "Understand value quickly"
+        ],
+        "momentsOfTruth": [
+          "Clarity",
+          "Proof"
+        ],
+        "artefacts": [
+          "LP",
+          "Explainer video"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Industry",
+          "Referrer"
+        ],
+        "models": [
+          "Personalisation"
+        ],
+        "automations": [
+          "Variant selection"
+        ],
+        "risks": [
+          "Bias in copy"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Info overload"
+        ],
+        "nudges": [
+          "Chunking",
+          "Visual hierarchy"
+        ],
+        "frameworks": [
+          "Fogg"
+        ],
+        "habit": "Scrolls to CTA"
+      },
+      "governance": {
+        "checks": [
+          "Accessibility",
+          "Brand"
+        ],
+        "metrics": [
+          "Scroll depth",
+          "CTA CTR"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "D3",
+      "title": "Webinar Sign-Up",
+      "stageKey": "D",
+      "column": 3,
+      "description": "Expert webinar with case study; lead capture.",
+      "experience": {
+        "personas": [
+          "Champion",
+          "Security Lead"
+        ],
+        "jobsToBeDone": [
+          "Learn from peers"
+        ],
+        "momentsOfTruth": [
+          "Credibility"
+        ],
+        "artefacts": [
+          "Form",
+          "Calendar invite"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Title",
+          "Seniority"
+        ],
+        "models": [
+          "Propensity",
+          "Spam scoring"
+        ],
+        "automations": [
+          "MQL routing"
+        ],
+        "risks": [
+          "Overcollection"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Registration friction"
+        ],
+        "nudges": [
+          "Auto-fill",
+          "Minimal fields"
+        ],
+        "frameworks": [
+          "COM-B"
+        ],
+        "habit": "Registers"
+      },
+      "governance": {
+        "checks": [
+          "Consent"
+        ],
+        "metrics": [
+          "Registrations",
+          "Attendance"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "D4",
+      "title": "G2 / Review Site Visit",
+      "stageKey": "D",
+      "column": 3,
+      "description": "Prospect compares ratings and quotes.",
+      "experience": {
+        "personas": [
+          "Buyer"
+        ],
+        "jobsToBeDone": [
+          "De-risk choice"
+        ],
+        "momentsOfTruth": [
+          "Social proof"
+        ],
+        "artefacts": [
+          "Badges",
+          "Quotes"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Referrer"
+        ],
+        "models": [
+          "Attribution"
+        ],
+        "automations": [
+          "UTM stitching"
+        ],
+        "risks": [
+          "Attribution gaps"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Choice overload"
+        ],
+        "nudges": [
+          "Top highlights"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Clicks back to site"
+      },
+      "governance": {
+        "checks": [
+          "Quote rights"
+        ],
+        "metrics": [
+          "Return visits"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "C1",
+      "title": "Interactive ROI Calculator",
+      "stageKey": "C",
+      "column": 4,
+      "description": "Self-serve TCO vs ROI with scenario presets.",
+      "experience": {
+        "personas": [
+          "Buyer",
+          "Finance"
+        ],
+        "jobsToBeDone": [
+          "Quantify value"
+        ],
+        "momentsOfTruth": [
+          "Transparency"
+        ],
+        "artefacts": [
+          "Calculator",
+          "PDF export"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Inputs",
+          "Firmographics"
+        ],
+        "models": [
+          "Elasticity",
+          "Propensity"
+        ],
+        "automations": [
+          "Quote draft"
+        ],
+        "risks": [
+          "Model bias"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Analysis paralysis"
+        ],
+        "nudges": [
+          "Default preset",
+          "Anchor"
+        ],
+        "frameworks": [
+          "Nudge"
+        ],
+        "habit": "Saves config"
+      },
+      "governance": {
+        "checks": [
+          "Explainability"
+        ],
+        "metrics": [
+          "Saves",
+          "Demo requests"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "C2",
+      "title": "Security & Compliance Pack",
+      "stageKey": "C",
+      "column": 5,
+      "description": "SOC2, ISO27001, DPA, data flows downloadable bundle.",
+      "experience": {
+        "personas": [
+          "Security Lead",
+          "Legal"
+        ],
+        "jobsToBeDone": [
+          "Assess risk"
+        ],
+        "momentsOfTruth": [
+          "Completeness"
+        ],
+        "artefacts": [
+          "PDF pack",
+          "Data map"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Sector"
+        ],
+        "models": [
+          "Doc recommendation"
+        ],
+        "automations": [
+          "NDA gate"
+        ],
+        "risks": [
+          "Over-restriction"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Risk aversion"
+        ],
+        "nudges": [
+          "Plain-language summaries"
+        ],
+        "frameworks": [
+          "Plain English"
+        ],
+        "habit": "Shares pack"
+      },
+      "governance": {
+        "checks": [
+          "Up-to-date certs"
+        ],
+        "metrics": [
+          "Downloads",
+          "Time to review"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "C3",
+      "title": "Live Product Demo",
+      "stageKey": "C",
+      "column": 6,
+      "description": "Tailored demo with the prospect’s data sample.",
+      "experience": {
+        "personas": [
+          "Champion",
+          "Exec Sponsor"
+        ],
+        "jobsToBeDone": [
+          "See fit"
+        ],
+        "momentsOfTruth": [
+          "Speed to insight"
+        ],
+        "artefacts": [
+          "Deck",
+          "Demo env"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Use-case tags"
+        ],
+        "models": [
+          "Next best feature"
+        ],
+        "automations": [
+          "Demo script notes"
+        ],
+        "risks": [
+          "Hallucination if AI present"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Trust in results"
+        ],
+        "nudges": [
+          "Compare vs baseline"
+        ],
+        "frameworks": [
+          "Fogg"
+        ],
+        "habit": "Requests pilot"
+      },
+      "governance": {
+        "checks": [
+          "Demo data handling"
+        ],
+        "metrics": [
+          "Pilot requests"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "C4",
+      "title": "Pilot Plan Agreement",
+      "stageKey": "C",
+      "column": 6,
+      "description": "Define scope, success criteria, and timeline.",
+      "experience": {
+        "personas": [
+          "Buyer",
+          "Ops"
+        ],
+        "jobsToBeDone": [
+          "Align expectations"
+        ],
+        "momentsOfTruth": [
+          "Clear criteria"
+        ],
+        "artefacts": [
+          "One-pager",
+          "SOW draft"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Stakeholders"
+        ],
+        "models": [
+          "Risk scoring"
+        ],
+        "automations": [
+          "Tasking"
+        ],
+        "risks": [
+          "Scope creep"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Ambiguity"
+        ],
+        "nudges": [
+          "Checklist"
+        ],
+        "frameworks": [
+          "RACI"
+        ],
+        "habit": "Signs pilot"
+      },
+      "governance": {
+        "checks": [
+          "Legal review"
+        ],
+        "metrics": [
+          "Pilot conversion"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "A1",
+      "title": "Procurement Kickoff",
+      "stageKey": "A",
+      "column": 7,
+      "description": "PO creation and vendor onboarding.",
+      "experience": {
+        "personas": [
+          "Procurement",
+          "Finance"
+        ],
+        "jobsToBeDone": [
+          "Complete onboarding"
+        ],
+        "momentsOfTruth": [
+          "Frictionless"
+        ],
+        "artefacts": [
+          "PO",
+          "Vendor form"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "PO status"
+        ],
+        "models": [
+          "Delay prediction"
+        ],
+        "automations": [
+          "Reminders"
+        ],
+        "risks": [
+          "Stall risk"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Process fatigue"
+        ],
+        "nudges": [
+          "Progress bar"
+        ],
+        "frameworks": [
+          "BJ Fogg"
+        ],
+        "habit": "Uploads docs"
+      },
+      "governance": {
+        "checks": [
+          "Policy"
+        ],
+        "metrics": [
+          "Cycle time"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "A2",
+      "title": "SSO & SCIM Setup",
+      "stageKey": "A",
+      "column": 8,
+      "description": "IdP integration; roles and groups.",
+      "experience": {
+        "personas": [
+          "IT Admin"
+        ],
+        "jobsToBeDone": [
+          "Secure access"
+        ],
+        "momentsOfTruth": [
+          "Zero friction"
+        ],
+        "artefacts": [
+          "IdP guide"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "IdP type"
+        ],
+        "models": [
+          "Config helper"
+        ],
+        "automations": [
+          "Just-in-time roles"
+        ],
+        "risks": [
+          "Privilege creep"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Complexity"
+        ],
+        "nudges": [
+          "Copy-paste configs"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Tests login"
+      },
+      "governance": {
+        "checks": [
+          "Least privilege"
+        ],
+        "metrics": [
+          "Time to SSO"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "A3",
+      "title": "Data Connectors",
+      "stageKey": "A",
+      "column": 8,
+      "description": "Connect warehouse and SaaS sources.",
+      "experience": {
+        "personas": [
+          "Data Eng",
+          "Analyst"
+        ],
+        "jobsToBeDone": [
+          "Ingest data"
+        ],
+        "momentsOfTruth": [
+          "Coverage"
+        ],
+        "artefacts": [
+          "Connector list"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Source types"
+        ],
+        "models": [
+          "Schema mapping"
+        ],
+        "automations": [
+          "Auto-mapping"
+        ],
+        "risks": [
+          "PII leakage"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Schema mismatch"
+        ],
+        "nudges": [
+          "Templates"
+        ],
+        "frameworks": [
+          "COM-B"
+        ],
+        "habit": "Runs first sync"
+      },
+      "governance": {
+        "checks": [
+          "PII masking"
+        ],
+        "metrics": [
+          "Time to first data"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "A4",
+      "title": "Success Plan",
+      "stageKey": "A",
+      "column": 7,
+      "description": "Document KPIs, roles, cadence.",
+      "experience": {
+        "personas": [
+          "Champion",
+          "CSM"
+        ],
+        "jobsToBeDone": [
+          "Align on outcomes"
+        ],
+        "momentsOfTruth": [
+          "Mutual accountability"
+        ],
+        "artefacts": [
+          "Plan doc"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "KPI choices"
+        ],
+        "models": [
+          "Health score"
+        ],
+        "automations": [
+          "QBR calendar"
+        ],
+        "risks": [
+          "Misaligned goals"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Vagueness"
+        ],
+        "nudges": [
+          "SMART KPIs"
+        ],
+        "frameworks": [
+          "OKRs"
+        ],
+        "habit": "Accepts plan"
+      },
+      "governance": {
+        "checks": [
+          "Feasibility"
+        ],
+        "metrics": [
+          "TTFV (days)"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "U1",
+      "title": "Team Onboarding",
+      "stageKey": "U",
+      "column": 9,
+      "description": "Role-based walkthroughs and checklists.",
+      "experience": {
+        "personas": [
+          "Analyst",
+          "Manager"
+        ],
+        "jobsToBeDone": [
+          "Adopt quickly"
+        ],
+        "momentsOfTruth": [
+          "Clarity"
+        ],
+        "artefacts": [
+          "Guides",
+          "Checklists"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Role",
+          "Usage"
+        ],
+        "models": [
+          "Content reco"
+        ],
+        "automations": [
+          "In-app tips"
+        ],
+        "risks": [
+          "Over-nudge"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Time scarcity"
+        ],
+        "nudges": [
+          "5-min tasks"
+        ],
+        "frameworks": [
+          "Tiny Habits"
+        ],
+        "habit": "Completes week-1 tasks"
+      },
+      "governance": {
+        "checks": [
+          "Training records"
+        ],
+        "metrics": [
+          "Activation %"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "U2",
+      "title": "Dashboard Customisation",
+      "stageKey": "U",
+      "column": 9,
+      "description": "Templates per role; save & share.",
+      "experience": {
+        "personas": [
+          "Analyst",
+          "Exec"
+        ],
+        "jobsToBeDone": [
+          "See what matters"
+        ],
+        "momentsOfTruth": [
+          "Signal-to-noise"
+        ],
+        "artefacts": [
+          "Templates"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Viewed metrics"
+        ],
+        "models": [
+          "Relevance ranking"
+        ],
+        "automations": [
+          "Auto-layout"
+        ],
+        "risks": [
+          "Filter leakage"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Choice overload"
+        ],
+        "nudges": [
+          "Starter templates"
+        ],
+        "frameworks": [
+          "Nudge"
+        ],
+        "habit": "Saves dashboard"
+      },
+      "governance": {
+        "checks": [
+          "SSOT"
+        ],
+        "metrics": [
+          "Saved views",
+          "Shares"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "U3",
+      "title": "Alert Tuning",
+      "stageKey": "U",
+      "column": 10,
+      "description": "Adjust thresholds; mute noise.",
+      "experience": {
+        "personas": [
+          "Ops",
+          "Analyst"
+        ],
+        "jobsToBeDone": [
+          "Reduce noise"
+        ],
+        "momentsOfTruth": [
+          "Precision"
+        ],
+        "artefacts": [
+          "Alert center"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Baseline drift"
+        ],
+        "models": [
+          "Anomaly"
+        ],
+        "automations": [
+          "Auto-tune suggestion"
+        ],
+        "risks": [
+          "Automation bias"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Fatigue"
+        ],
+        "nudges": [
+          "Batching",
+          "Digest"
+        ],
+        "frameworks": [
+          "Hick’s Law"
+        ],
+        "habit": "Accepts suggestions"
+      },
+      "governance": {
+        "checks": [
+          "Ops policy"
+        ],
+        "metrics": [
+          "False positive rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "U4",
+      "title": "Quarterly Business Review (QBR)",
+      "stageKey": "U",
+      "column": 10,
+      "description": "Review outcomes vs plan; agree next experiments.",
+      "experience": {
+        "personas": [
+          "Champion",
+          "Exec"
+        ],
+        "jobsToBeDone": [
+          "Track value"
+        ],
+        "momentsOfTruth": [
+          "Evidence"
+        ],
+        "artefacts": [
+          "QBR deck"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Usage",
+          "Outcomes"
+        ],
+        "models": [
+          "Value attribution"
+        ],
+        "automations": [
+          "Deck generation"
+        ],
+        "risks": [
+          "Attribution error"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Attribution doubt"
+        ],
+        "nudges": [
+          "Before/after"
+        ],
+        "frameworks": [
+          "CBA"
+        ],
+        "habit": "Commits to experiments"
+      },
+      "governance": {
+        "checks": [
+          "Data lineage"
+        ],
+        "metrics": [
+          "Expansion opps"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "R1",
+      "title": "Expansion Proposal",
+      "stageKey": "R",
+      "column": 11,
+      "description": "Add seats/modules based on usage signals.",
+      "experience": {
+        "personas": [
+          "Buyer",
+          "Champion"
+        ],
+        "jobsToBeDone": [
+          "Scale value"
+        ],
+        "momentsOfTruth": [
+          "Fit"
+        ],
+        "artefacts": [
+          "Quote"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Active users",
+          "Feature adoption"
+        ],
+        "models": [
+          "Next best offer"
+        ],
+        "automations": [
+          "Quote draft"
+        ],
+        "risks": [
+          "Pushy timing"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Budget timing"
+        ],
+        "nudges": [
+          "Cohort ROI"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Reviews quote"
+      },
+      "governance": {
+        "checks": [
+          "Fairness"
+        ],
+        "metrics": [
+          "Expansion rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "R2",
+      "title": "Renewal Negotiation",
+      "stageKey": "R",
+      "column": 11,
+      "description": "Align on term, price, and roadmap gives.",
+      "experience": {
+        "personas": [
+          "Buyer",
+          "Finance"
+        ],
+        "jobsToBeDone": [
+          "Balance cost/benefit"
+        ],
+        "momentsOfTruth": [
+          "Fairness"
+        ],
+        "artefacts": [
+          "Order form"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Health score"
+        ],
+        "models": [
+          "Churn risk"
+        ],
+        "automations": [
+          "Playbook nudge"
+        ],
+        "risks": [
+          "Discount addiction"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Loss aversion"
+        ],
+        "nudges": [
+          "Give-gets"
+        ],
+        "frameworks": [
+          "Prospect Theory"
+        ],
+        "habit": "Signs renewal"
+      },
+      "governance": {
+        "checks": [
+          "Approval matrix"
+        ],
+        "metrics": [
+          "Gross retention"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "R3",
+      "title": "Case Study & PR",
+      "stageKey": "R",
+      "column": 12,
+      "description": "Publish outcomes; strengthen social proof.",
+      "experience": {
+        "personas": [
+          "Champion",
+          "Marketing"
+        ],
+        "jobsToBeDone": [
+          "Celebrate value"
+        ],
+        "momentsOfTruth": [
+          "Credibility"
+        ],
+        "artefacts": [
+          "Case study",
+          "Quote"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Outcome metrics"
+        ],
+        "models": [
+          "Story selection"
+        ],
+        "automations": [
+          "Draft outline"
+        ],
+        "risks": [
+          "Puffery"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Time"
+        ],
+        "nudges": [
+          "Co-write offer"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Approves draft"
+      },
+      "governance": {
+        "checks": [
+          "Approvals",
+          "NDAs"
+        ],
+        "metrics": [
+          "Referrals"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "R4",
+      "title": "Churn Rescue Play",
+      "stageKey": "R",
+      "column": 12,
+      "description": "If risk spikes, launch save sequence.",
+      "experience": {
+        "personas": [
+          "CSM",
+          "Exec"
+        ],
+        "jobsToBeDone": [
+          "Recover account"
+        ],
+        "momentsOfTruth": [
+          "Responsiveness"
+        ],
+        "artefacts": [
+          "Recovery plan"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Usage drop",
+          "NPS"
+        ],
+        "models": [
+          "Churn prediction"
+        ],
+        "automations": [
+          "Escalations"
+        ],
+        "risks": [
+          "Nagging"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Frustration"
+        ],
+        "nudges": [
+          "Apology + make-good"
+        ],
+        "frameworks": [
+          "Service recovery"
+        ],
+        "habit": "Accepts remediation"
+      },
+      "governance": {
+        "checks": [
+          "Data privacy"
+        ],
+        "metrics": [
+          "Save rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    }
+  ]
+}

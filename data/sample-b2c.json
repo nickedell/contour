@@ -1,0 +1,1295 @@
+{
+  "stages": [
+    {
+      "key": "D",
+      "label": "Discover",
+      "order": 1,
+      "color": "#7C3AED"
+    },
+    {
+      "key": "C",
+      "label": "Consider",
+      "order": 2,
+      "color": "#2563EB"
+    },
+    {
+      "key": "A",
+      "label": "Activate",
+      "order": 3,
+      "color": "#059669"
+    },
+    {
+      "key": "U",
+      "label": "Use",
+      "order": 4,
+      "color": "#D97706"
+    },
+    {
+      "key": "R",
+      "label": "Renew",
+      "order": 5,
+      "color": "#DC2626"
+    }
+  ],
+  "moments": [
+    {
+      "id": "D1",
+      "title": "TikTok Challenge",
+      "stageKey": "D",
+      "column": 1,
+      "description": "Short video shows 4-week core challenge with real user clips.",
+      "experience": {
+        "personas": [
+          "Explorer",
+          "Returner"
+        ],
+        "jobsToBeDone": [
+          "Get motivated"
+        ],
+        "momentsOfTruth": [
+          "Relatability"
+        ],
+        "artefacts": [
+          "Video",
+          "Hashtag"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Interest tags"
+        ],
+        "models": [
+          "Look-alike audience"
+        ],
+        "automations": [
+          "Budget pacing"
+        ],
+        "risks": [
+          "Over-targeting"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skepticism"
+        ],
+        "nudges": [
+          "Before/after collage"
+        ],
+        "frameworks": [
+          "Social Proof"
+        ],
+        "habit": "Taps link"
+      },
+      "governance": {
+        "checks": [
+          "Claims review"
+        ],
+        "metrics": [
+          "CTR",
+          "Shares"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "D2",
+      "title": "App Store Listing",
+      "stageKey": "D",
+      "column": 2,
+      "description": "Screenshots highlight plans, coaches, and streaks.",
+      "experience": {
+        "personas": [
+          "Explorer"
+        ],
+        "jobsToBeDone": [
+          "See features"
+        ],
+        "momentsOfTruth": [
+          "Clarity"
+        ],
+        "artefacts": [
+          "Screens",
+          "Reviews"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Device",
+          "Locale"
+        ],
+        "models": [
+          "Listing variant"
+        ],
+        "automations": [
+          "A/B"
+        ],
+        "risks": [
+          "Review gating"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Choice overload"
+        ],
+        "nudges": [
+          "Top 3 benefits"
+        ],
+        "frameworks": [
+          "Hick’s Law"
+        ],
+        "habit": "Installs app"
+      },
+      "governance": {
+        "checks": [
+          "Store policy"
+        ],
+        "metrics": [
+          "Install rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "D3",
+      "title": "Friend Referral",
+      "stageKey": "D",
+      "column": 3,
+      "description": "Friend shares invite with 30-day free trial.",
+      "experience": {
+        "personas": [
+          "Explorer"
+        ],
+        "jobsToBeDone": [
+          "Lower risk"
+        ],
+        "momentsOfTruth": [
+          "Trust"
+        ],
+        "artefacts": [
+          "Invite link"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Social graph"
+        ],
+        "models": [
+          "Fraud check"
+        ],
+        "automations": [
+          "Invite credit"
+        ],
+        "risks": [
+          "Abuse"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Commitment fear"
+        ],
+        "nudges": [
+          "Cancel anytime"
+        ],
+        "frameworks": [
+          "Loss Aversion"
+        ],
+        "habit": "Starts trial"
+      },
+      "governance": {
+        "checks": [
+          "Referral policy"
+        ],
+        "metrics": [
+          "Trial starts"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "D4",
+      "title": "Creator Review on YouTube",
+      "stageKey": "D",
+      "column": 3,
+      "description": "Long-form review covers pros/cons.",
+      "experience": {
+        "personas": [
+          "Explorer",
+          "Skeptic"
+        ],
+        "jobsToBeDone": [
+          "Validate"
+        ],
+        "momentsOfTruth": [
+          "Credibility"
+        ],
+        "artefacts": [
+          "Video review"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Referrer"
+        ],
+        "models": [
+          "Attribution"
+        ],
+        "automations": [
+          "UTM mapping"
+        ],
+        "risks": [
+          "Attribution gaps"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Time"
+        ],
+        "nudges": [
+          "Chapters",
+          "Summary"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Clicks to site"
+      },
+      "governance": {
+        "checks": [
+          "Disclosure"
+        ],
+        "metrics": [
+          "Click-through"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "C1",
+      "title": "Onboarding Quiz",
+      "stageKey": "C",
+      "column": 4,
+      "description": "Quick goals, level, time, equipment; builds a plan.",
+      "experience": {
+        "personas": [
+          "Starter",
+          "Returner"
+        ],
+        "jobsToBeDone": [
+          "Get a plan"
+        ],
+        "momentsOfTruth": [
+          "Personal fit"
+        ],
+        "artefacts": [
+          "Quiz"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Self-report",
+          "Device"
+        ],
+        "models": [
+          "Plan recommender"
+        ],
+        "automations": [
+          "Program draft"
+        ],
+        "risks": [
+          "Bad fit"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Effort"
+        ],
+        "nudges": [
+          "Progress bar"
+        ],
+        "frameworks": [
+          "Tiny Habits"
+        ],
+        "habit": "Completes quiz"
+      },
+      "governance": {
+        "checks": [
+          "Explainability"
+        ],
+        "metrics": [
+          "Quiz completion"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "C2",
+      "title": "Pricing & Trial Page",
+      "stageKey": "C",
+      "column": 5,
+      "description": "Monthly/annual with family plan and student discount.",
+      "experience": {
+        "personas": [
+          "Price-sensitive"
+        ],
+        "jobsToBeDone": [
+          "Compare options"
+        ],
+        "momentsOfTruth": [
+          "Fairness"
+        ],
+        "artefacts": [
+          "Price table"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Region"
+        ],
+        "models": [
+          "Price localisation"
+        ],
+        "automations": [
+          "Promo code"
+        ],
+        "risks": [
+          "Dark patterns"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Loss aversion"
+        ],
+        "nudges": [
+          "Best value badge"
+        ],
+        "frameworks": [
+          "Anchoring"
+        ],
+        "habit": "Chooses plan"
+      },
+      "governance": {
+        "checks": [
+          "Consumer law"
+        ],
+        "metrics": [
+          "Checkout starts"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "C3",
+      "title": "Coach Chat Preview",
+      "stageKey": "C",
+      "column": 6,
+      "description": "Shows a sample chat with coach tips; upsell for 1:1.",
+      "experience": {
+        "personas": [
+          "Starter"
+        ],
+        "jobsToBeDone": [
+          "Feel supported"
+        ],
+        "momentsOfTruth": [
+          "Responsiveness"
+        ],
+        "artefacts": [
+          "Chat preview"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Goal type"
+        ],
+        "models": [
+          "Intent scoring"
+        ],
+        "automations": [
+          "Upsell placement"
+        ],
+        "risks": [
+          "Misrep of human vs AI"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skepticism"
+        ],
+        "nudges": [
+          "Response SLA"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Adds coaching"
+      },
+      "governance": {
+        "checks": [
+          "Clear labeling"
+        ],
+        "metrics": [
+          "Attach rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "C4",
+      "title": "Free Class Sample",
+      "stageKey": "C",
+      "column": 6,
+      "description": "Unlocks one class to experience the coach style.",
+      "experience": {
+        "personas": [
+          "Starter",
+          "Returner"
+        ],
+        "jobsToBeDone": [
+          "Try before buy"
+        ],
+        "momentsOfTruth": [
+          "Enjoyment"
+        ],
+        "artefacts": [
+          "Sample class"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Completion"
+        ],
+        "models": [
+          "Propensity"
+        ],
+        "automations": [
+          "Follow-up"
+        ],
+        "risks": [
+          "Over-notify"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Time"
+        ],
+        "nudges": [
+          "15-min option"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Completes sample"
+      },
+      "governance": {
+        "checks": [
+          "Music rights"
+        ],
+        "metrics": [
+          "Completion rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "A1",
+      "title": "Apple/Google Pay Checkout",
+      "stageKey": "A",
+      "column": 7,
+      "description": "One-tap trial start with wallet.",
+      "experience": {
+        "personas": [
+          "All"
+        ],
+        "jobsToBeDone": [
+          "Fast start"
+        ],
+        "momentsOfTruth": [
+          "Frictionless"
+        ],
+        "artefacts": [
+          "Sheet"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Wallet availability"
+        ],
+        "models": [
+          "Fraud"
+        ],
+        "automations": [
+          "Receipts"
+        ],
+        "risks": [
+          "Chargeback"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Form fatigue"
+        ],
+        "nudges": [
+          "Auto-fill"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Starts trial"
+      },
+      "governance": {
+        "checks": [
+          "SCA"
+        ],
+        "metrics": [
+          "Checkout conversion"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "A2",
+      "title": "Calendar & Reminder Opt-in",
+      "stageKey": "A",
+      "column": 8,
+      "description": "Adds workouts to calendar; sets reminders.",
+      "experience": {
+        "personas": [
+          "Starter",
+          "Busy pro"
+        ],
+        "jobsToBeDone": [
+          "Stay on track"
+        ],
+        "momentsOfTruth": [
+          "Commitment"
+        ],
+        "artefacts": [
+          "Calendar events"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Timezone",
+          "OS"
+        ],
+        "models": [
+          "Best time"
+        ],
+        "automations": [
+          "Smart reminders"
+        ],
+        "risks": [
+          "Over-nudge"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Forgetting"
+        ],
+        "nudges": [
+          "Default times"
+        ],
+        "frameworks": [
+          "Commitment devices"
+        ],
+        "habit": "Enables reminders"
+      },
+      "governance": {
+        "checks": [
+          "Consent"
+        ],
+        "metrics": [
+          "Reminder opt-ins"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "A3",
+      "title": "Equipment Setup & Alternatives",
+      "stageKey": "A",
+      "column": 7,
+      "description": "Detects available kit and offers body-weight alternatives.",
+      "experience": {
+        "personas": [
+          "Home user"
+        ],
+        "jobsToBeDone": [
+          "Make it possible"
+        ],
+        "momentsOfTruth": [
+          "Feasibility"
+        ],
+        "artefacts": [
+          "Setup tips"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Device sensors"
+        ],
+        "models": [
+          "Equipment inference"
+        ],
+        "automations": [
+          "Plan adjust"
+        ],
+        "risks": [
+          "Bad inference"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "No equipment"
+        ],
+        "nudges": [
+          "No-kit plan"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Begins plan"
+      },
+      "governance": {
+        "checks": [
+          "Accuracy"
+        ],
+        "metrics": [
+          "Plan starts"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "A4",
+      "title": "First-Week Goals",
+      "stageKey": "A",
+      "column": 8,
+      "description": "Easy wins and streak primer.",
+      "experience": {
+        "personas": [
+          "Starter"
+        ],
+        "jobsToBeDone": [
+          "Build habit"
+        ],
+        "momentsOfTruth": [
+          "Momentum"
+        ],
+        "artefacts": [
+          "Checklist"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Baseline activity"
+        ],
+        "models": [
+          "Goal setting"
+        ],
+        "automations": [
+          "Adaptive difficulty"
+        ],
+        "risks": [
+          "Over-challenge"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Time"
+        ],
+        "nudges": [
+          "5-min options"
+        ],
+        "frameworks": [
+          "Tiny Habits"
+        ],
+        "habit": "Completes first week"
+      },
+      "governance": {
+        "checks": [
+          "Wellbeing"
+        ],
+        "metrics": [
+          "Week-1 retention"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "U1",
+      "title": "Daily Session",
+      "stageKey": "U",
+      "column": 9,
+      "description": "Short, guided workouts with music.",
+      "experience": {
+        "personas": [
+          "Starter",
+          "Habit builder"
+        ],
+        "jobsToBeDone": [
+          "Follow along"
+        ],
+        "momentsOfTruth": [
+          "Enjoyment"
+        ],
+        "artefacts": [
+          "Player"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "HR from device",
+          "Completion"
+        ],
+        "models": [
+          "Adaptive coach"
+        ],
+        "automations": [
+          "Next class"
+        ],
+        "risks": [
+          "Data privacy"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Motivation dips"
+        ],
+        "nudges": [
+          "Streaks",
+          "Badges"
+        ],
+        "frameworks": [
+          "Variable rewards"
+        ],
+        "habit": "Maintains streak"
+      },
+      "governance": {
+        "checks": [
+          "Consent"
+        ],
+        "metrics": [
+          "DAU",
+          "Completion"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "U2",
+      "title": "Nutrition Suggestions",
+      "stageKey": "U",
+      "column": 9,
+      "description": "Auto-generated meals based on goals & preferences.",
+      "experience": {
+        "personas": [
+          "Starter"
+        ],
+        "jobsToBeDone": [
+          "Eat right"
+        ],
+        "momentsOfTruth": [
+          "Practicality"
+        ],
+        "artefacts": [
+          "Meal cards"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Allergies",
+          "Prefs"
+        ],
+        "models": [
+          "Meal reco"
+        ],
+        "automations": [
+          "Grocery list"
+        ],
+        "risks": [
+          "Allergen risk"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Shopping effort"
+        ],
+        "nudges": [
+          "One-tap list"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Adds to list"
+      },
+      "governance": {
+        "checks": [
+          "Allergen labeling"
+        ],
+        "metrics": [
+          "Feature use"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "U3",
+      "title": "Community Challenge",
+      "stageKey": "U",
+      "column": 10,
+      "description": "Join a group challenge with leaderboard.",
+      "experience": {
+        "personas": [
+          "Social"
+        ],
+        "jobsToBeDone": [
+          "Stay motivated"
+        ],
+        "momentsOfTruth": [
+          "Belonging"
+        ],
+        "artefacts": [
+          "Leaderboard"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Social graph"
+        ],
+        "models": [
+          "Leaderboard fairness"
+        ],
+        "automations": [
+          "Anti-cheat"
+        ],
+        "risks": [
+          "Toxicity"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Fear of judgment"
+        ],
+        "nudges": [
+          "Private mode"
+        ],
+        "frameworks": [
+          "Self-determination"
+        ],
+        "habit": "Joins challenge"
+      },
+      "governance": {
+        "checks": [
+          "Moderation"
+        ],
+        "metrics": [
+          "Challenge join rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "U4",
+      "title": "Recovery Day & Mobility",
+      "stageKey": "U",
+      "column": 10,
+      "description": "Suggests rest with guided mobility based on fatigue signals.",
+      "experience": {
+        "personas": [
+          "Starter",
+          "Athlete"
+        ],
+        "jobsToBeDone": [
+          "Avoid injury"
+        ],
+        "momentsOfTruth": [
+          "Care"
+        ],
+        "artefacts": [
+          "Recovery routine"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "HRV",
+          "Fatigue score"
+        ],
+        "models": [
+          "Fatigue"
+        ],
+        "automations": [
+          "Plan adjust"
+        ],
+        "risks": [
+          "Over-reliance"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Skip mentality"
+        ],
+        "nudges": [
+          "Coach message"
+        ],
+        "frameworks": [
+          "COM-B"
+        ],
+        "habit": "Takes recovery day"
+      },
+      "governance": {
+        "checks": [
+          "Medical disclaimer"
+        ],
+        "metrics": [
+          "Injury reports"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "R1",
+      "title": "Annual Plan Offer",
+      "stageKey": "R",
+      "column": 11,
+      "description": "Timed offer when streak hits 21 days.",
+      "experience": {
+        "personas": [
+          "Starter"
+        ],
+        "jobsToBeDone": [
+          "Save money"
+        ],
+        "momentsOfTruth": [
+          "Value"
+        ],
+        "artefacts": [
+          "Offer banner"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Streak length"
+        ],
+        "models": [
+          "NBX offer"
+        ],
+        "automations": [
+          "Offer timing"
+        ],
+        "risks": [
+          "Pressure"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Commitment"
+        ],
+        "nudges": [
+          "Cancel anytime"
+        ],
+        "frameworks": [
+          "Prospect Theory"
+        ],
+        "habit": "Upgrades"
+      },
+      "governance": {
+        "checks": [
+          "Consumer rights"
+        ],
+        "metrics": [
+          "Upgrade rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "R2",
+      "title": "Win-Back Sequence",
+      "stageKey": "R",
+      "column": 12,
+      "description": "If streak breaks, launch supportive nudge sequence.",
+      "experience": {
+        "personas": [
+          "Returner"
+        ],
+        "jobsToBeDone": [
+          "Restart"
+        ],
+        "momentsOfTruth": [
+          "Empathy"
+        ],
+        "artefacts": [
+          "Email/push"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Inactivity"
+        ],
+        "models": [
+          "Churn risk"
+        ],
+        "automations": [
+          "Personalised nudges"
+        ],
+        "risks": [
+          "Notification fatigue"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Shame"
+        ],
+        "nudges": [
+          "Non-judgmental tone"
+        ],
+        "frameworks": [
+          "Motivational interviewing"
+        ],
+        "habit": "Resumes sessions"
+      },
+      "governance": {
+        "checks": [
+          "Unsubscribe"
+        ],
+        "metrics": [
+          "Reactivation"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    },
+    {
+      "id": "R3",
+      "title": "Ambassador Referral",
+      "stageKey": "R",
+      "column": 12,
+      "description": "Earn rewards for inviting friends after 60 days.",
+      "experience": {
+        "personas": [
+          "Advocate"
+        ],
+        "jobsToBeDone": [
+          "Share success"
+        ],
+        "momentsOfTruth": [
+          "Recognition"
+        ],
+        "artefacts": [
+          "Referral"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "NPS"
+        ],
+        "models": [
+          "Ambassador scoring"
+        ],
+        "automations": [
+          "Codes"
+        ],
+        "risks": [
+          "Manipulative incentives"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Effort"
+        ],
+        "nudges": [
+          "One-tap share"
+        ],
+        "frameworks": [
+          "EAST"
+        ],
+        "habit": "Shares link"
+      },
+      "governance": {
+        "checks": [
+          "T&Cs"
+        ],
+        "metrics": [
+          "Referrals"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "tactical"
+    },
+    {
+      "id": "R4",
+      "title": "Exit Survey & Feedback Loop",
+      "stageKey": "R",
+      "column": 11,
+      "description": "If cancelling, capture reasons and suggest fixes.",
+      "experience": {
+        "personas": [
+          "Leaver"
+        ],
+        "jobsToBeDone": [
+          "Be heard"
+        ],
+        "momentsOfTruth": [
+          "Respect"
+        ],
+        "artefacts": [
+          "Survey"
+        ]
+      },
+      "ai": {
+        "signals": [
+          "Cancel reason"
+        ],
+        "models": [
+          "Topic model"
+        ],
+        "automations": [
+          "Routing"
+        ],
+        "risks": [
+          "Dark patterns"
+        ]
+      },
+      "behaviour": {
+        "barriers": [
+          "Frustration"
+        ],
+        "nudges": [
+          "Easy cancel"
+        ],
+        "frameworks": [
+          "Service recovery"
+        ],
+        "habit": "Submits feedback"
+      },
+      "governance": {
+        "checks": [
+          "Consumer law"
+        ],
+        "metrics": [
+          "Rejoin rate"
+        ]
+      },
+      "layers": [
+        "experience",
+        "ai",
+        "behaviour",
+        "governance"
+      ],
+      "dpLevel": "integrated"
+    }
+  ]
+}
