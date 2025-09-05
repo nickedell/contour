@@ -1,17 +1,10 @@
-// index.jsx
+// components/HybridFrameworkPro/index.jsx
 'use client';
 
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { RefreshCcw } from 'lucide-react';
 
-// ——— your libs ———
-import { getStages } from '@/lib/stages.js';
-import { filterMoments } from '@/lib/filter.js';
-import { sortMoments } from '@/lib/sort.js';
-import { collectKpiKeys, inferKpiDomains } from '@/lib/kpi.js';
-import { getCommentsMap, addComment, deleteComment } from '@/lib/comments.js';
-
-// ——— your components ———
+// ——— Components (paths may differ in your repo) ———
 import JourneyTrack from './JourneyView/JourneyTrack';
 import LensGrid from './LensView/LensGrid';
 import SidePanel from './SidePanel/SidePanel';
@@ -23,29 +16,165 @@ import StageEditor from './StageEditor';
 import KpiConfig from './KpiConfig';
 import SettingsPanel from './SettingsPanel';
 
-// ——— data ———
+// ——— Default dataset ———
 import dataset from '@/data/marine.json';
 
-const lanes = [
+// ——— Perspectives (lanes) ———
+const LANES = [
   { key: 'experience', label: 'Value & Experience',    accent: 'border-emerald-500' },
   { key: 'ai',         label: 'AI & Data',             accent: 'border-sky-500'     },
   { key: 'behaviour',  label: 'Behavioural Adoption',  accent: 'border-amber-500'   },
   { key: 'governance', label: 'Governance & Risk',     accent: 'border-rose-500'    },
 ];
 
+// ——— Capability layer filters (left drawer) ———
 const LAYER_KEYS = ['service', 'experience', 'behaviour', 'systems', 'value', 'ai', 'governance'];
 
+/* =====================================================================================
+   Small helpers kept inline so this page is self-contained and robust
+===================================================================================== */
+
+// Derive stages from data, preserving provided order/title if present
+function computeStages(data) {
+  if (Array.isArray(data?.stages) && data.stages.length) {
+    return data.stages.map((s, i) => ({
+      key: s.key ?? s.label ?? s.title ?? `stage-${i}`,
+      label: s.label ?? s.title ?? s.key,
+      title: s.title ?? s.label ?? s.key,
+      order: Number.isFinite(+s.order) ? +s.order : i + 1,
+      letter: s.letter,
+    }));
+  }
+  const preferred = ['Discover', 'Consider', 'Activate', 'Use', 'Renew'];
+  const map = new Map();
+  for (const m of data?.moments || []) {
+    const key = m.stageKey || m.stage;
+    if (!key) continue;
+    const label = (typeof m.stage === 'string' && m.stage) || (typeof m.stageKey === 'string' && m.stageKey) || key;
+    if (!map.has(key)) map.set(key, { key, label, title: label });
+  }
+  const arr = [...map.values()];
+  arr.sort((a, b) => {
+    const ia = preferred.indexOf(a.label);
+    const ib = preferred.indexOf(b.label);
+    if (ia !== -1 || ib !== -1) return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+    return String(a.label).localeCompare(String(b.label));
+  });
+  return arr.map((s, i) => ({ ...s, order: i + 1 }));
+}
+
+// Ensure each moment has all four perspective blocks
+function normalizeMoment(m) {
+  return {
+    ...m,
+    experience: { personas: [], jobsToBeDone: [], momentsOfTruth: [], artefacts: [], ...(m.experience || {}) },
+    ai:         { signals: [], models: [], automations: [], risks: [], ...(m.ai || {}) },
+    behaviour:  { barriers: [], nudges: [], frameworks: [], habit: '', ...(m.behaviour || {}) },
+    governance: { checks: [], metrics: [], ...(m.governance || {}) },
+    comments:   Array.isArray(m.comments) ? m.comments : [],
+  };
+}
+
+// Search filter across common fields
+function filterByQuery(moments, q) {
+  if (!q) return moments;
+  const needle = q.toLowerCase();
+  return (moments || []).filter((m) => {
+    if ((m.title || '').toLowerCase().includes(needle)) return true;
+    const exp = m.experience || {};
+    const ai  = m.ai || {};
+    const beh = m.behaviour || {};
+    const gov = m.governance || {};
+    const pools = [
+      ...(exp.momentsOfTruth || []),
+      ...(exp.jobsToBeDone || []),
+      ...(exp.artefacts || []),
+      ...(ai.signals || []),
+      ...(ai.models || []),
+      ...(ai.automations || []),
+      ...(ai.risks || []),
+      ...(beh.barriers || []),
+      ...(beh.nudges || []),
+      ...(beh.frameworks || []),
+      ...(gov.checks || []),
+      ...(gov.metrics || []),
+    ];
+    return pools.some((x) => (String(x).toLowerCase()).includes(needle));
+  });
+}
+
+// Sort: stage order, then column, then title
+function sortMomentsFor(stages, arr) {
+  const orderOf = (k) => {
+    const s = stages.find((x) => x.key === (k || ''));
+    return s?.order || 999;
+  };
+  return arr.slice().sort((a, b) => {
+    const so = orderOf(a.stageKey || a.stage) - orderOf(b.stageKey || b.stage);
+    if (so !== 0) return so;
+    const col = (a.column || 1) - (b.column || 1);
+    if (col !== 0) return col;
+    return String(a.title).localeCompare(String(b.title));
+  });
+}
+
+// Comments helpers (simple in-place storage on each moment)
+function getCommentsMap(data) {
+  const out = {};
+  for (const m of data?.moments || []) out[m.id] = m.comments || [];
+  return out;
+}
+function addComment(data, momentId, comment) {
+  const next = { ...(data || {}) };
+  next.moments = (data?.moments || []).map((m) =>
+    m.id === momentId ? { ...m, comments: [...(m.comments || []), comment] } : m
+  );
+  return next;
+}
+function deleteComment(data, momentId, commentId) {
+  const next = { ...(data || {}) };
+  next.moments = (data?.moments || []).map((m) =>
+    m.id === momentId ? { ...m, comments: (m.comments || []).filter((c) => c.id !== commentId) } : m
+  );
+  return next;
+}
+
+// Collect KPI keys from the dataset
+function collectKpiKeys(moments) {
+  const set = new Set();
+  for (const m of moments || []) {
+    if (m.metrics) Object.keys(m.metrics).forEach((k) => set.add(k));
+  }
+  return [...set];
+}
+// (simple) inferred KPI domains (optional UX nicety)
+function inferKpiDomains(moments) {
+  const out = {};
+  for (const m of moments || []) {
+    for (const [k, v] of Object.entries(m.metrics || {})) {
+      out[k] = typeof v === 'number' && v <= 1 ? 'ratio' : 'score';
+    }
+  }
+  return out;
+}
+
+/* =====================================================================================
+   Main component
+===================================================================================== */
+
 export default function HybridFrameworkPro() {
-  // ——— Theme / layout ———
+  // ——— Theme / UI prefs ———
   const [dark, setDark] = useState(false);
   const [followSystem, setFollowSystem] = useState(true);
   const followSystemRef = useRef(true);
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(true);
-  const [viewMode, setViewMode] = useState('journey'); // 'journey' | 'lens'
-  const [minH, setMinH] = useState(0);                 // full-height grid
+  const [minH, setMinH] = useState(0);
 
-  // ——— Panels & toggles ———
+  // ——— View mode ———
+  const [viewMode, setViewMode] = useState('journey'); // 'journey' | 'lens'
+
+  // ——— Drawers / panels ———
   const [leftOpen, setLeftOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [personasOpen, setPersonasOpen] = useState(false);
@@ -53,10 +182,16 @@ export default function HybridFrameworkPro() {
   const [panelOpen, setPanelOpen] = useState(false);
 
   // ——— Data / filters ———
-  const [data, setData] = useState({ ...dataset, __name: 'marine' });
+  const [data, setData] = useState(() => ({
+    ...dataset,
+    moments: (dataset?.moments || []).map(normalizeMoment),
+    __name: 'marine',
+  }));
   const [query, setQuery] = useState('');
   const [visibleLanes, setVisibleLanes] = useState({ experience: true, ai: true, behaviour: true, governance: true });
-  const [layerVisible, setLayerVisible] = useState({ service: true, experience: true, behaviour: true, systems: true, value: true, ai: true, governance: true });
+  const [layerVisible, setLayerVisible] = useState({
+    service: true, experience: true, behaviour: true, systems: true, value: true, ai: true, governance: true,
+  });
   const [dpFilter, setDpFilter] = useState('all'); // all | tactical | integrated
 
   // ——— Selection / edit ———
@@ -84,7 +219,7 @@ export default function HybridFrameworkPro() {
   const containerRef = useRef(null);
   const [dragging, setDragging] = useState({ active: false, id: null, startX: 0, startCol: 1 });
 
-  // Title + dark class application
+  // Title + theme class
   useEffect(() => { document.title = 'Contour — Integrated System Map'; }, []);
   useEffect(() => {
     const root = document.documentElement;
@@ -92,42 +227,32 @@ export default function HybridFrameworkPro() {
     else root.classList.remove('dark');
   }, [dark]);
 
-  // Follow system theme by default, live-update unless user overrides
+  // Follow system + persist prefs
   useEffect(() => { followSystemRef.current = followSystem; }, [followSystem]);
-  // Follow system by default; only use stored `dark` if followSystem === false
   useEffect(() => {
     try {
       const raw = localStorage.getItem('hsm:prefs');
       const mql = window.matchMedia('(prefers-color-scheme: dark)');
-  
-      const applySystem = (e) => {
-        // When OS theme changes, update if we're following system
-        if (followSystemRef.current) setDark((e?.matches ?? mql.matches));
-      };
-  
-      let fs = true;
+      const applySystem = (e) => { if (followSystemRef.current) setDark((e?.matches ?? mql.matches)); };
+
       if (raw) {
         const p = JSON.parse(raw);
-        fs = typeof p.followSystem === 'boolean' ? p.followSystem : true;
+        const fs = typeof p.followSystem === 'boolean' ? p.followSystem : true;
         setFollowSystem(fs);
-  
-        // If following system, ignore stored `dark` and use OS
         if (fs) setDark(mql.matches);
         else if (typeof p.dark === 'boolean') setDark(p.dark);
         else setDark(mql.matches);
-  
+
         if (typeof p.commentMode === 'boolean') setCommentMode(p.commentMode);
         if (typeof p.presentMode === 'boolean') setPresentMode(p.presentMode);
         if (typeof p.leftOpen === 'boolean') setLeftOpen(p.leftOpen);
         if (typeof p.currentUser === 'string') setCurrentUser(p.currentUser);
         if (p.kpiConfig) setKpiConfig(p.kpiConfig);
       } else {
-        // First visit: follow system
         setFollowSystem(true);
         setDark(mql.matches);
       }
-  
-      // Listen for OS theme changes
+
       if (mql.addEventListener) mql.addEventListener('change', applySystem);
       else mql.addListener(applySystem);
       return () => {
@@ -136,9 +261,6 @@ export default function HybridFrameworkPro() {
       };
     } catch {}
   }, []);
-
-
-  // Persist prefs
   useEffect(() => {
     const prefs = { dark, commentMode, presentMode, leftOpen, currentUser, kpiConfig, followSystem };
     localStorage.setItem('hsm:prefs', JSON.stringify(prefs));
@@ -177,28 +299,31 @@ export default function HybridFrameworkPro() {
   }, []);
 
   // Derived structures
-  const stages = useMemo(() => getStages(data), [data]);
+  const stages = useMemo(() => computeStages(data), [data]);
   const kpiKeys = useMemo(() => collectKpiKeys(data?.moments || []), [data]);
   const inferredDomains = useMemo(() => inferKpiDomains(data?.moments || []), [data]);
   useEffect(() => { if (heatmapOn && kpiKeys.length && !kpiKey) setKpiKey(kpiKeys[0]); }, [heatmapOn, kpiKeys, kpiKey]);
 
+  // Filter by search + capability layers + dp level, then stable ordering
   const filteredMoments = useMemo(() => {
-    const arr = filterMoments(data?.moments || [], { q: query, layerVisible, dpFilter });
-    return arr.slice().sort((a, b) => sortMoments(a, b, stages));
-  }, [data, query, layerVisible, dpFilter, stages]);
+    let arr = filterByQuery((data?.moments || []).filter((m) => {
+      // capability layers filter (if your moments mark layers in m.layers as string[])
+      if (m.layers && Array.isArray(m.layers)) {
+        const anyOn = m.layers.some((l) => layerVisible[l] !== false);
+        if (!anyOn) return false;
+      }
+      // design pattern level filter (if your moments have m.level)
+      if (dpFilter !== 'all' && m.level && m.level !== dpFilter) return false;
+      return true;
+    }), query);
+    return sortMomentsFor(stages, arr);
+  }, [data, query, stages, layerVisible, dpFilter]);
 
   const selectedMoment = useMemo(
     () => (data?.moments || []).find((m) => m.id === selected) || null,
     [selected, data]
   );
-
   const commentsMap = useMemo(() => getCommentsMap(data), [data]);
-  
-  const stageLabels = useMemo(
-    () => Object.fromEntries((stages || []).map(s => [s.key, s.label])),
-    [stages]
-  );
-
 
   // Comments
   const onAddComment = (momentId, text) => {
@@ -209,7 +334,7 @@ export default function HybridFrameworkPro() {
     setData((prev) => deleteComment(prev, momentId, commentId));
   };
 
-  // Column drag in Journey view
+  // Column drag in Journey view (disabled by default but kept here)
   useEffect(() => {
     const onMove = (e) => {
       if (!dragging.active) return;
@@ -231,7 +356,6 @@ export default function HybridFrameworkPro() {
       window.removeEventListener('mouseup', onUp);
     };
   }, [dragging]);
-
   const handleDragStart = (e, moment) => setDragging({ active: true, id: moment.id, startX: e.clientX, startCol: moment.column || 1 });
 
   // Stage editor save
@@ -259,7 +383,7 @@ export default function HybridFrameworkPro() {
       const moments = (prev?.moments || []).slice();
       const idx = moments.findIndex((m) => m.id === (editInitial?.id || moment.id));
       if (idx >= 0) moments[idx] = moment;
-      else moments.push(moment);
+      else moments.push(normalizeMoment(moment));
       return { ...(prev || {}), moments };
     });
   };
@@ -273,31 +397,24 @@ export default function HybridFrameworkPro() {
     if (selected === id) { setPanelOpen(false); setSelected(null); }
   };
 
-  // Ensure lens blocks
-  const ensureLensBlocks = (m) => ({
-    ...m,
-    experience: { personas: [], jobsToBeDone: [], momentsOfTruth: [], artefacts: [], ...(m.experience || {}) },
-    ai:         { signals: [], models: [], automations: [], risks: [], ...(m.ai || {}) },
-    behaviour:  { barriers: [], nudges: [], frameworks: [], habit: '', ...(m.behaviour || {}) },
-    governance: { checks: [], metrics: [], ...(m.governance || {}) },
-  });
+  // Ensure new imports normalize moments
+  const ensureLensBlocks = (m) => normalizeMoment(m);
 
   return (
     <div className={dark ? 'dark' : ''}>
       {/* Deep grey page bg in dark mode */}
-      <div className="bg-white text-black dark:bg-[#121417] dark:text-neutral-100 transition-colors">
-        {/* Brand header */}
+      <div className="bg-white text-black dark:bg-[#121417] dark:text-neutral-100 transition-colors min-h-screen">
+        {/* Optional brand bar in present mode */}
         {presentMode && (
           <div className="print:hidden">
             <BrandBar />
           </div>
         )}
 
-        {/* Header with flush, higher chevrons */}
+        {/* Header */}
         <header className="sticky top-0 z-30 border-b border-neutral-200 dark:border-neutral-800 backdrop-blur bg-white/70 dark:bg-[#121417]/70">
-          {/* Absolute chevrons in a padding-free relative wrapper */}
           <div className="relative">
-            {/* Left open (only when drawer closed) — higher and flush to edge */}
+            {/* Left open chevron — flush and high */}
             {!leftOpen && (
               <button
                 onClick={() => setLeftOpen(true)}
@@ -308,7 +425,8 @@ export default function HybridFrameworkPro() {
                 {'>'}
               </button>
             )}
-            {/* Right open (only when settings closed) — higher and flush to edge */}
+
+            {/* Right open chevron — flush and high */}
             {!settingsOpen && (
               <button
                 onClick={() => setSettingsOpen(true)}
@@ -324,16 +442,15 @@ export default function HybridFrameworkPro() {
             <div className="max-w-7xl mx-auto px-4 py-3">
               {/* Title row */}
               <div className="flex items-center gap-3">
-               <h1 className="text-lg md:text-xl tracking-widest uppercase whitespace-nowrap">
-                 <span className="font-extrabold">Contour</span>
-                 <span className="font-extralight"> / Integrated System Map</span>
-               </h1>
-
+                <h1 className="text-lg md:text-xl tracking-widest uppercase whitespace-nowrap">
+                  <span className="font-extrabold">Contour</span>
+                  <span className="font-light"> — Integrated System Map</span>
+                </h1>
               </div>
 
-              {/* Controls row — nav on left, theme toggle on far right */}
+              {/* Controls row — nav on left, theme on right */}
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                {/* Left-side nav group */}
+                {/* View toggle */}
                 <div className="flex items-center gap-1 border border-neutral-300 dark:border-neutral-700 rounded-md overflow-hidden">
                   <button
                     onClick={() => setViewMode('journey')}
@@ -345,7 +462,7 @@ export default function HybridFrameworkPro() {
                   <button
                     onClick={() => setViewMode('lens')}
                     className={`px-2 py-1.5 text-sm ${viewMode === 'lens' ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : ''}`}
-                    title="Lenses view"
+                    title="Perspectives view"
                   >
                     Perspectives
                   </button>
@@ -356,17 +473,18 @@ export default function HybridFrameworkPro() {
                   value={data?.__name || 'marine'}
                   onChange={async (e) => {
                     const v = e.target.value;
-                    if (v === 'marine')      { const mod = await import('@/data/marine.json'); setData({ ...mod.default, __name: 'marine' }); }
-                    else if (v === 'sample') { const mod = await import('@/data/sample.json'); setData({ ...mod.default, __name: 'sample' }); }
-                    else if (v === 'theory') { const mod = await import('@/data/theory.json'); setData({ ...mod.default, __name: 'theory' }); }
-                    else if (v === 'b2b') { const mod = await import('@/data/sample-b2b.json'); setData({ ...mod.default, __name: 'b2b' }); }
-                    else if (v === 'b2c') { const mod = await import('@/data/sample-b2c.json'); setData({ ...mod.default, __name: 'b2c' }); }
+                    if (v === 'marine')      { const mod = await import('@/data/marine.json'); setData({ ...mod.default, moments: (mod.default?.moments || []).map(ensureLensBlocks), __name: 'marine' }); }
+                    else if (v === 'sample') { const mod = await import('@/data/sample.json'); setData({ ...mod.default, moments: (mod.default?.moments || []).map(ensureLensBlocks), __name: 'sample' }); }
+                    else if (v === 'b2b')    { const mod = await import('@/data/sample-b2b.json'); setData({ ...mod.default, moments: (mod.default?.moments || []).map(ensureLensBlocks), __name: 'b2b' }); }
+                    else if (v === 'b2c')    { const mod = await import('@/data/sample-b2c.json'); setData({ ...mod.default, moments: (mod.default?.moments || []).map(ensureLensBlocks), __name: 'b2c' }); }
+                    else if (v === 'theory') { const mod = await import('@/data/theory.json'); setData({ ...mod.default, moments: (mod.default?.moments || []).map(ensureLensBlocks), __name: 'theory' }); }
                     else if (v === 'upload') { fileInputRef.current?.click(); }
                   }}
                   className="px-2 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
                   title="Switch dataset"
                 >
                   <option value="marine">Marine</option>
+                  <option value="sample">Sample</option>
                   <option value="b2b">Sample — B2B (SaaS)</option>
                   <option value="b2c">Sample — B2C (Fitness)</option>
                   <option value="theory">Theory</option>
@@ -374,15 +492,13 @@ export default function HybridFrameworkPro() {
                 </select>
 
                 {/* Search */}
-                <div className="relative">
-                  <input
-                    type="search"
-                    placeholder="Search moments, signals, nudges…"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="pl-3 pr-3 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
-                  />
-                </div>
+                <input
+                  type="search"
+                  placeholder="Search moments, signals, nudges…"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="pl-3 pr-3 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+                />
 
                 {/* Import/Export */}
                 <input
@@ -420,7 +536,7 @@ export default function HybridFrameworkPro() {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'dataset.json';
+                    a.download = `${data?.__name || 'dataset'}.json`;
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
@@ -457,8 +573,8 @@ export default function HybridFrameworkPro() {
                   </button>
                 </div>
 
-                {/* Right-side theme toggle (separate from nav, aligned to far right) */}
-                <div className="ml-auto">
+                {/* Theme (right aligned) */}
+                <div className="ml-auto flex items-center gap-2">
                   <button
                     onClick={() => { setDark((d) => !d); setFollowSystem(false); }}
                     className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
@@ -467,17 +583,29 @@ export default function HybridFrameworkPro() {
                   >
                     {dark ? 'Light mode' : 'Dark mode'}
                   </button>
+                  <button
+                    onClick={() => {
+                      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                      setFollowSystem(true);
+                      setDark(mql.matches);
+                    }}
+                    className="px-2 py-1.5 text-xs rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    title="Use system theme"
+                    aria-label="Use system theme"
+                  >
+                    System
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Perspectives pill bar (sticky under the main header) */}
+        {/* Perspectives pill bar (sticky) */}
         <div className="sticky top-[89px] md:top-[81px] z-20 bg-white/70 dark:bg-[#121417]/70 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
           <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center gap-2">
             <span className="uppercase tracking-widest text-xs text-neutral-500">Perspectives</span>
-            {lanes.map((ln) => {
+            {LANES.map((ln) => {
               const disabled = viewMode === 'journey';
               return (
                 <button
@@ -603,7 +731,6 @@ export default function HybridFrameworkPro() {
                 <JourneyTrack
                   moments={filteredMoments}
                   stages={stages}
-                  stageLabels={stageLabels}    
                   onOpen={(id) => { setSelected(id); setPanelOpen(true); }}
                   enableDrag={false}
                   onDragStart={handleDragStart}
@@ -614,10 +741,10 @@ export default function HybridFrameworkPro() {
                 />
               ) : (
                 <LensGrid
-                  lanes={lanes}
+                  lanes={LANES}
                   visibleLanes={visibleLanes}
                   moments={filteredMoments}
-                  stages={stages}     
+                  stages={stages}
                   onOpen={(id) => { setSelected(id); setPanelOpen(true); }}
                   kpiKey={kpiKey}
                   heatmapOn={heatmapOn}
@@ -650,9 +777,9 @@ export default function HybridFrameworkPro() {
             onDeleteComment={onDeleteComment}
             currentUser={currentUser}
             presentMode={presentMode}
-            stages={stages} 
-            viewMode={viewMode}            
-            visibleLanes={visibleLanes}   
+            stages={stages}
+            viewMode={viewMode}
+            visibleLanes={visibleLanes}
           />
         )}
 
@@ -661,7 +788,6 @@ export default function HybridFrameworkPro() {
           open={editOpen}
           onClose={() => setEditOpen(false)}
           stages={stages}
-          stageLabels={stageLabels}   
           initial={editInitial}
           existingIds={existingIds}
           onSave={handleSave}
@@ -688,7 +814,7 @@ export default function HybridFrameworkPro() {
           onSave={(cfg) => { setKpiConfig(cfg); setKpiConfigOpen(false); }}
         />
 
-        {/* Settings panel */}
+        {/* Settings panel (right drawer) */}
         <SettingsPanel
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
@@ -704,6 +830,14 @@ export default function HybridFrameworkPro() {
           onOpenKpiConfig={() => setKpiConfigOpen(true)}
           showGrid={showGrid}
           setShowGrid={setShowGrid}
+          presentMode={presentMode}
+          setPresentMode={setPresentMode}
+          leftOpen={leftOpen}
+          setLeftOpen={setLeftOpen}
+          personasOpen={personasOpen}
+          setPersonasOpen={setPersonasOpen}
+          stageEditorOpen={stageEditorOpen}
+          setStageEditorOpen={setStageEditorOpen}
         />
       </div>
     </div>
