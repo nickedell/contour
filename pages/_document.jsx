@@ -49,7 +49,8 @@ export default class MyDocument extends Document {
 		  <meta name="author" content="ResonantAI Ltd" />
 		  <meta name="publisher" content="ResonantAI Ltd" />
 		  <meta name="copyright" content="© 2025 ResonantAI Ltd. All rights reserved." />
-		  <link rel="license" href="/LICENSE.txt" />
+		  <link rel="license" href="/COPYRIGHT.txt" />
+
 		</Head>
 		<body>
 		  <Main />

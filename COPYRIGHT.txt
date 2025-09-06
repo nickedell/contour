@@ -1,0 +1,6 @@
+Copyright (c) 2025 ResonantAI Ltd. All rights reserved.
+
+This software and its associated materials are proprietary and confidential.
+Unauthorized copying, distribution, modification, or use of this software,
+in whole or in part, is strictly prohibited without the prior written consent
+of ResonantAI Ltd.

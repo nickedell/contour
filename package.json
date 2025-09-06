@@ -33,3 +33,12 @@
     "packages/*"
   ]
 }
+
+{
+  "name": "contour",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "ResonantAI Ltd",
+  "homepage": "https://contour-ai.netlify.app",
+  "repository": { "type": "git", "url": "https://github.com/ResonantAI/contour.git" }
+}
