@@ -21,6 +21,13 @@
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.3"
   },
+  "name": "contour",
+    "private": true,
+    "license": "UNLICENSED",
+    "author": "ResonantAI Ltd",
+    "homepage": "https://contour-ai.netlify.app",
+    "repository": { "type": "git", "url": "https://github.com/ResonantAI/contour.git" }
+  },
   "name": "contour-monorepo",
   "private": true,
   "packageManager": "pnpm@9.10.0",
@@ -32,13 +39,4 @@
     "apps/*",
     "packages/*"
   ]
-}
-
-{
-  "name": "contour",
-  "private": true,
-  "license": "UNLICENSED",
-  "author": "ResonantAI Ltd",
-  "homepage": "https://contour-ai.netlify.app",
-  "repository": { "type": "git", "url": "https://github.com/ResonantAI/contour.git" }
 }
