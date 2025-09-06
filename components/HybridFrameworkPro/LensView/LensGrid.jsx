@@ -1,3 +1,9 @@
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved.
+ * Proprietary and confidential. See /COPYRIGHT.txt.
+ */
+
 // components/HybridFrameworkPro/LensView/LensGrid.jsx
 import React, { useMemo, useState, useEffect } from 'react';
 

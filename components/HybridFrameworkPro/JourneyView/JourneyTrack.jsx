@@ -1,4 +1,19 @@
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved.
+ * Proprietary and confidential. See /COPYRIGHT.txt.
+ */
+
 // components/HybridFrameworkPro/JourneyView/JourneyTrack.jsx
+
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved.
+ * Proprietary and confidential. See /COPYRIGHT.txt.
+ */
+
+
+
 import React, { useRef, useState, useEffect } from 'react';
 import StageRail from './StageRail';
 
@@ -150,7 +165,6 @@ export default function JourneyTrack({
                   />
                 ) : (
                   <div className="pt-5 space-y-3">
-                    {/* vertical stack (waterfall style) */}
                     {list.map((m) => (
                       <MomentCard
                         key={m.id}
@@ -190,7 +204,7 @@ function StageStackPreview({
 }) {
   // Show up to 4 tucked "ghost" cards behind the header card (peek RIGHT)
   const ghostCount = Math.min(4, Math.max(0, count - 1));
-  const offsets = Array.from({ length: ghostCount }, (_, i) => (i + 1) * 8); // 8px, 16px, 24px…
+  const offsets = Array.from({ length: ghostCount }, (_, i) => (i + 1) * 10); // 10px, 20px…
 
   return (
     <button
@@ -198,19 +212,24 @@ function StageStackPreview({
       className="relative block w-[260px] h-[130px] rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm text-left hover:shadow transition"
       title="Expand stage"
     >
-      {/* Tucked ghosts peeking to the RIGHT */}
+      {/* Ghost layers (behind), full size, fade with depth */}
       {offsets.map((dx, i) => (
         <div
           key={i}
-          className="absolute inset-y-0 right-0 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 pointer-events-none"
-          style={{ transform: `translateX(${dx}px)`, zIndex: 1 + i }}
+          className="absolute inset-0 rounded-xl border border-neutral-200 dark:border-[#2a2f36] bg-white dark:bg-[#1a1e24] pointer-events-none"
+          style={{
+            transform: `translateX(${dx}px)`,
+            opacity: [0.8, 0.6, 0.4, 0.2][i] ?? 0.2,
+            zIndex: 10 - i,
+          }}
           aria-hidden
         />
       ))}
-      {/* Front card */}
+
+      {/* Front frame */}
       <div
-        className="absolute inset-0 p-3 rounded-xl"
-        style={{ zIndex: 1 + offsets.length + 1 }}
+        className="absolute inset-0 p-3 rounded-xl border border-neutral-200 dark:border-[#2a2f36] bg-white dark:bg-[#1a1e24] shadow-sm"
+        style={{ zIndex: 50 }}
       >
         <div className="flex items-center justify-between">
           <span className="inline-flex h-5 px-2 items-center justify-center rounded-full text-[11px] font-bold border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100">
@@ -251,6 +270,11 @@ function MomentCard({
       ? getHeat(moment, kpiKey, kpiConfig)
       : 0;
 
+  // Prefer new moment.tags; fall back to legacy moment.layers
+  const tags = Array.isArray(moment?.tags) && moment.tags.length
+    ? moment.tags
+    : (Array.isArray(moment?.layers) ? moment.layers : []);
+
   return (
     <div
       className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm hover:shadow transition cursor-pointer"
@@ -288,6 +312,25 @@ function MomentCard({
             />
           </div>
         )}
+
+        {/* Tags */}
+        {tags.length ? (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {tags.slice(0, 6).map((t) => (
+              <span
+                key={String(t)}
+                className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300"
+              >
+                #{String(t)}
+              </span>
+            ))}
+            {tags.length > 6 && (
+              <span className="px-2 py-[2px] text-[10px] rounded-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                +{tags.length - 6}
+              </span>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );

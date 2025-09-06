@@ -1,3 +1,9 @@
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved.
+ * Proprietary and confidential. See /COPYRIGHT.txt.
+ */
+
 // components/HybridFrameworkPro/SidePanel/SidePanel.jsx
 import { X } from 'lucide-react';
 import CommentsPanel from '../CommentsPanel';
@@ -86,6 +92,22 @@ export default function SidePanel({
           <X className="h-4 w-4" />
         </button>
       </div>
+      
+      {/* Tags */}
+      {(moment.tags?.length || moment.layers?.length) ? (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {(moment.tags || moment.layers || []).map((t) => (
+            <span
+              key={t}
+              className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300"
+            >
+              #{t}
+            </span>
+          ))}
+        </div>
+      ) : null}
+
+      
 
       {/* Toolbar (hidden in Present mode) */}
       {!presentMode && (

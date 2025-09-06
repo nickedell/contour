@@ -1,3 +1,9 @@
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved.
+ * Proprietary and confidential. See /COPYRIGHT.txt.
+ */
+
 // components/HybridFrameworkPro/index.jsx
 'use client';
 
@@ -15,6 +21,8 @@ import ConfirmDialog from './ConfirmDialog';
 import StageEditor from './StageEditor';
 import KpiConfig from './KpiConfig';
 import SettingsPanel from './SettingsPanel';
+import MobileExplainer from './MobileExplainer';
+
 
 // ——— Default dataset ———
 import dataset from '@/data/marine.json';
@@ -78,6 +86,17 @@ function normalizeMoment(m) {
 // Search filter across common fields
 function filterByQuery(moments, q) {
   if (!q) return moments;
+  
+  const trimmed = q.trim();
+  if (trimmed.startsWith('#')) {
+    const tag = trimmed.slice(1).toLowerCase();
+    return (moments || []).filter((m) => {
+      const arr = (m.tags || m.layers || []).map((t) => String(t).toLowerCase());
+      return arr.includes(tag);
+    });
+  }
+  
+  
   const needle = q.toLowerCase();
   return (moments || []).filter((m) => {
     if ((m.title || '').toLowerCase().includes(needle)) return true;
@@ -406,6 +425,15 @@ export default function HybridFrameworkPro() {
 
   return (
     <div className={dark ? 'dark' : ''}>
+    
+    {/* Mobile-only explainer */}
+    <div className="block lg:hidden">
+      <MobileExplainer />
+    </div>
+    
+    {/* Full app only on lg+ */}
+    <div className="hidden lg:block">
+
       {/* Deep grey page bg in dark mode */}
       <div className="bg-white text-black dark:bg-[#121417] dark:text-neutral-100 transition-colors min-h-screen">
         {/* Optional brand bar in present mode */}
@@ -670,23 +698,27 @@ export default function HybridFrameworkPro() {
           </div>
 
           {/* Layers */}
-          <div className="mb-6">
-            <div className="text-xs uppercase tracking-widest text-neutral-500 mb-2">Capability Layers</div>
-            <div className="grid grid-cols-2 gap-2">
-              {LAYER_KEYS.map((l) => (
-                <label key={l} className="flex items-center gap-2 text-sm" title="Filter moments by this capability">
-                  <input
-                    type="checkbox"
-                    className="accent-neutral-400 dark:accent-neutral-600"
-                    checked={layerVisible[l]}
-                    onChange={() => setLayerVisible((v) => ({ ...v, [l]: !v[l] }))}
-                    aria-label={`Filter by ${l}`}
-                  />
-                  {l}
-                </label>
-              ))}
-            </div>
-          </div>
+     {/* Tags */}
+     <div className="mb-6">
+       <div className="text-xs uppercase tracking-widest text-neutral-500 mb-2">Tags</div>
+       <div className="grid grid-cols-2 gap-2">
+         {LAYER_KEYS.map((l) => (
+           <label key={l} className="flex items-center gap-2 text-sm" title={`Filter by #${l}`}>
+             <input
+               type="checkbox"
+               className="accent-neutral-400 dark:accent-neutral-600"
+               checked={layerVisible[l]}
+               onChange={() => setLayerVisible((v) => ({ ...v, [l]: !v[l] }))}
+               aria-label={`Filter by #${l}`}
+             />
+             <span className="text-neutral-700 dark:text-neutral-300">#{l}</span>
+           </label>
+         ))}
+       </div>
+       <p className="mt-2 text-xs text-neutral-500">
+         Toggle which <b>tags</b> to include across the map.
+       </p>
+     </div>
 
           {/* Design Pattern Level */}
           <div className="mb-6">
@@ -847,6 +879,7 @@ export default function HybridFrameworkPro() {
           setStageEditorOpen={setStageEditorOpen}
         />
       </div>
+      </div> {/* end: hidden lg:block */}
     </div>
   );
 }

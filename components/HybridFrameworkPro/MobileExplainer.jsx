@@ -1,0 +1,20 @@
+/**
+ * Contour — Integrated System Map
+ * © 2025 ResonantAI Ltd. All rights reserved. Proprietary and confidential.
+ */
+export default function MobileExplainer() {
+  return (
+	<div className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-white text-black dark:bg-[#121417] dark:text-neutral-100">
+	  <h1 className="text-2xl font-extrabold tracking-widest uppercase">
+		Contour<span className="font-light"> — Integrated System Map</span>
+	  </h1>
+	  <p className="mt-4 max-w-md text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+		Contour is designed for large screens so you can see stages, moments, and perspectives
+		together. Please use a laptop or desktop for the best experience.
+	  </p>
+	  <p className="mt-2 max-w-md text-xs text-neutral-500">
+		Tip: if you’re on a tablet, rotate to landscape and widen the window.
+	  </p>
+	</div>
+  );
+}
