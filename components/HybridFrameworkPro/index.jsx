@@ -476,7 +476,14 @@ export default function HybridFrameworkPro() {
             <div className="max-w-7xl mx-auto px-4 py-3">
               {/* Title row */}
               <div className="flex items-center gap-3">
-                <h1 className="text-lg md:text-xl tracking-widest uppercase whitespace-nowrap">
+                <img
+                  src="/assets/img/logo.svg"
+                  alt="Contour logo"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 rounded-md p-1 bg-neutral-900 dark:bg-transparent"
+                />
+                <h1 className="text-lg font-extrabold tracking-tight">
                   <span className="font-extrabold">Contour</span>
                   <span className="font-light"> — Integrated System Map</span>
                 </h1>
