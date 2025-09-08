@@ -13,7 +13,7 @@ export default function MobileExplainer() {
 		className="h-[90px] w-[90px] rounded-2xl p-3 bg-neutral-900 dark:bg-transparent"
 	  />
 	  <h1 className="mt-4 text-2xl font-extrabold tracking-widest uppercase">
-		Contour<span className="font-light"> — Integrated System Map</span>
+		Contour<span className="font-light"> — Integrated System Maps</span>
 	  </h1>
 	  <p className="mt-4 max-w-md text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
 		Contour is designed for large screens so you can see stages, moments, and perspectives
