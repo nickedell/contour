@@ -1,0 +1,11 @@
+Supabase
+
+publishable key sb_publishable_Wh3tLBsnxrSauJ0MvCej5Q_dl3kcBSj
+
+secret key
+sb_secret_2PDt3mlpHeWPRsSR0URPfA_dv0sXNeM
+
+project id
+qjhnlgrvwwpjndbmxnye
+
+Project URL → will look like https://qjhnlgrvwwpjndbmxnye.supabase.co
