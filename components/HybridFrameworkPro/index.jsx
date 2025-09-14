@@ -630,7 +630,7 @@ export default function HybridFrameworkPro() {
                       setFollowSystem(true);
                       setDark(mql.matches);
                     }}
-                    className="px-2 py-1.5 text-xs rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    className="px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                     title="Use system theme"
                     aria-label="Use system theme"
                   >
