@@ -54,9 +54,11 @@ export default function LensGrid({
   }, [stages, moments]);
 
   // Per-stage collapsed state (expanded by default)
-  const [collapsed, setCollapsed] = useState(() =>
-    Object.fromEntries((stages || []).map(s => [s.key, false]))
-  );
+const [collapsed, setCollapsed] = React.useState(() => {
+    const init = {};
+    for (const s of stages) init[s.key] = true; // minimised by default
+    return init;
+  });
   useEffect(() => {
     setCollapsed(prev => {
       const next = { ...prev };
@@ -258,14 +260,14 @@ function MomentCard({ moment, stageLetter, stageTitle, onOpen, heat = 0 }) {
       title={`${moment.title} — ${stageTitle}`}
     >
       <div className="p-3">
-        <div className="flex items-center justify-between">
+       {/*<div className="flex items-center justify-between">
           <span className="inline-flex h-5 px-2 items-center justify-center rounded-full text-[11px] font-bold border border-neutral-300 text-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100">
             {stageLetter}
           </span>
           <span className="text-[10px] uppercase tracking-widest text-neutral-400">
             {stageTitle}
           </span>
-        </div>
+        </div> */}
 
         <h4 className="mt-2 font-semibold text-sm leading-tight">{moment.title}</h4>
 
