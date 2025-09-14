@@ -1,0 +1,53 @@
+curl -s -X POST https://nickedell.app.n8n.cloud/webhook/contour/personas/candidates \
+  -H 'Content-Type: application/json' \
+  -d '{"role":"Marketer","sector":"Marine","geo":"EU","org_type":"Energy","limit":5}'
+
+
+
+
+curl -s -X POST https://nickedell.app.n8n.cloud/webhook/persona-research/create \
+	-H 'Content-Type: application/json' \
+	-d '{"payload":{"people":[{"name":"Jane Doe","linkedin_url":""}],"role_keywords":["analyst"],"sector":"Marine","geo":"EU","similar_profiles_count":6,"evidence_mode":true}}'
+
+
+
+curl -s -X POST https://nickedell.app.n8n.cloud/webhook/contour/personas/save \
+	  -H 'Content-Type: application/json' \
+	  -d '{"set":{"name":"Marine Bunkering Team v1","context":"Desk Ops EU","tags":["marine","eu"]},"personas":[{"name":"Analyst (EU)","role":"Analyst","tags":["analyst"],"data":{"summary":"ok"}}]}'
+	  
+	  
+	  
+	  
+	  Bearer {{$env.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}}
+	  
+	  
+	  
+	  
+	  
+	  qjhnlgrvwwpjndbmxnye
+	  
+	  https://qjhnlgrvwwpjndbmxnye.supabase.co
+	  
+	  
+	  https://qjhnlgrvwwpjndbmxnye.supabase.co/rest/v1/persona_sets
+	  
+	  
+	  
+	  curl -s -X POST https://nickedell.app.n8n.cloud/webhook/contour/personas/save \
+		-H 'Content-Type: application/json' \
+		-d '{"set":{"name":"Marine Bunkering Team v1","context":"Desk Ops EU","tags":["marine","eu"]},"personas":[{"name":"Analyst (EU)","role":"Analyst","tags":["analyst"],"data":{"summary":"ok"}}]}'
+		
+		
+		
+		Save flow
+		
+		
+		
+		
+		# Replace <REF> and <SRK>
+		curl -s -X POST https://qjhnlgrvwwpjndbmxnye.supabase.co/rest/v1/persona_sets \
+		  -H "apikey: sb_secret_wjvSqx1tCfxYou9SD_GDag_6Ovhjfm_" \
+		  -H "Authorization: Bearer sb_secret_wjvSqx1tCfxYou9SD_GDag_6Ovhjfm_" \
+		  -H "Content-Type: application/json" \
+		  -H "Prefer: return=representation" \
+		  -d '{"name":"Ping","context":"manual test"}'
