@@ -4,7 +4,7 @@
  * © 2025 ResonantAI Ltd. All rights reserved.
  * Proprietary and confidential.
  */
-import { supabaseAdmin } from '../../../lib/supabaseAdmin';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export default async function handler(req, res) {
   const slug = String(req.query.slug || '').toLowerCase();

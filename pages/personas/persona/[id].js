@@ -35,7 +35,6 @@ export default function PersonaProfilePage() {
   const opportunities = p.opportunities || {};
   const quotes = p.representative_quotes || [];
   const evidence = p.evidence || [];
-
   return (
 	<PersonaLayout>
 	  {/* === IDENTICAL WRAPPER START === */}
