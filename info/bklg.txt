@@ -1,0 +1,189 @@
+Love this direction. I’ll do two things:
+	1.	park a super-clear “handover/backlog” so none of the UX decisions get lost,
+	2.	propose a concrete, buildable way to visualise relationships inside a team—from MVP to fancy.
+
+⸻
+
+🔒 Handover / Backlog (don’t lose this)
+
+Naming & framing
+	•	Sets → Teams (everywhere in UI, routes, labels).
+	•	Teams can be one or many personas; the library shows teams as cards.
+
+Pages & copy (Info Drawer)
+	•	/personas (Library)
+	•	Context: “The library lists your persona teams.”
+	•	How it works: team = 1..n personas; New Team to start.
+	•	Tip: “A team is a snapshot of people for a journey, stage, or org unit.”
+	•	/personas/new (Create New Team)
+	•	Context: “Create a new team of personas (one or many).”
+	•	Steps: Name+Context → Mode (Known Individuals or Role/Domain) → Generate → Review+Save.
+	•	Tip: “Start small; expand later.”
+	•	/personas/team/:id (Team Detail)
+	•	Context: “Detailed view of one team.”
+	•	How it works: persona cards → open profile drawer.
+	•	Profile sections: Snapshot, Background/Skills, Behaviours, Motivations/Goals/Frustrations, Evidence.
+	•	Tip: “Compare personas to spot tensions, synergies, gaps.”
+
+Mobile stance
+	•	Personas pages: responsive (ok on mobile).
+	•	Journey view: desktop-first → show mobile explainer page instead.
+
+Copyright & branding
+	•	Logo at /assets/img/logo.svg in headers (desktop & mobile explainer).
+	•	Copyright meta + COPYRIGHT.txt included.
+
+Supabase persistence (done / in progress)
+	•	maps, map_versions with REST APIs wired.
+	•	Personas: persona_sets (→ teams), personas, plus persona_sets_summary view.
+	•	n8n flows: /contour/personas/candidates and /contour/personas/save; research flow returns structured personas.
+
+Keep this block as your “source of truth” when we open the Feature thread.
+
+⸻
+
+🕸️ Visualising relationships between personas (inside a Team)
+
+What we’re aiming for
+
+Show how people relate (influence, blockers, info flows, commercial ties), so the team-level insight > sum of individuals.
+
+Data model (add one table)
+
+create table public.persona_relationships (
+  id uuid primary key default gen_random_uuid(),
+  team_id uuid not null references public.persona_sets(id) on delete cascade,
+  from_persona_id uuid not null references public.personas(id) on delete cascade,
+  to_persona_id uuid not null references public.personas(id) on delete cascade,
+  relation_type text not null,        -- e.g. "influences", "reports_to", "commercial", "info_flow", "conflict"
+  strength int check (strength between 1 and 5) default 3,
+  direction text check (direction in ('uni','bi')) default 'uni',
+  tags text[] default '{}',           -- e.g. ["budget","AI","compliance"]
+  note text,                          -- tooltip/explainer text
+  created_at timestamptz default now()
+);
+create index if not exists idx_rel_team on public.persona_relationships(team_id);
+
+Why this works:
+	•	Minimal yet expressive.
+	•	Supports icons by mapping relation_type → icon.
+	•	Tooltips from note.
+	•	Can later allow multi-edge (several relations between same two personas).
+
+⸻
+
+MVP UI (clean + shippable)
+
+Canvas:
+	•	Simple force-directed layout (or fixed circular/radial) with persona nodes.
+	•	Edges:
+	•	Arrow for direction='uni', line for bi.
+	•	Stroke weight or opacity encodes strength.
+	•	Icon chip mid-edge (💬 info, 💼 commercial, ⚠️ conflict, 📈 influence, 🔁 workflow).
+	•	Tooltips:
+	•	Hover edge → show relation_type, tags, and note.
+	•	Hover node → quick persona snapshot (name, role, 1-line headline).
+
+Interactions:
+	•	Click a node → opens the existing right-hand profile drawer (reuse your pattern).
+	•	Click an edge → small inline popover with details and “Edit” (if edit mode).
+	•	Legend in the corner with icons + labels (tiny, collapsible).
+
+Filters (top-right controls):
+	•	Relation type (multi-select chips).
+	•	Min strength (1–5).
+	•	Tag search (e.g. “budget”, “AI”).
+	•	Toggle “Show names / initials” (space saving).
+
+Empty state:
+	•	“No relationships yet. Click Add to connect personas.” (button opens edge-creation mode).
+
+⸻
+
+Edge creation UX (no-code friendly)
+	•	Toggle “Edit mode”.
+	•	Click + Add Relationship:
+	1.	Click source node, then target node.
+	2.	Modal: Relation type (select), Direction (uni/bi), Strength (1–5), Tags, Note.
+	3.	Save → POST to persona_relationships.
+	•	In edit mode: click an edge to edit/delete.
+
+⸻
+
+Layout options (pick 1 to start)
+	1.	Radial (target map)
+	•	One persona at center (selectable), others distributed around.
+	•	Great for “stakeholder orbit” visual.
+	•	Good readability; trivial to implement.
+	2.	Force-directed (auto)
+	•	Nodes find positions; strong ties pull closer.
+	•	Shows clusters naturally.
+	•	Slightly more code (but lots of tiny libs or D3 snippets exist).
+
+MVP pick: Radial for clarity. We can add “Center on…” dropdown to re-center.
+
+⸻
+
+Iconography (edge chips)
+
+Default mapping (can be themed):
+	•	📈 influences (uni)
+	•	↔ reports_to (uni from report → manager) or ↕ if you prefer hierarchical icon
+	•	💼 commercial (bi)
+	•	💬 info_flow (uni/bi)
+	•	⚠️ conflict (bi)
+	•	🤝 collaborates_with (bi)
+
+These are lightweight emoji to start; swap for SVGs later.
+
+⸻
+
+How it slots into the Team page
+	•	Tabs at top of Team Detail:
+	•	Cards | Relationships (beta) | (later: Comparisons, Exports)
+	•	The Cards tab is what you have now (grid).
+	•	The Relationships tab shows the graph canvas + filters + legend.
+	•	Drawer interaction (right-hand) stays consistent across tabs.
+
+⸻
+
+Implementation sketch (React + Tailwind, no heavy libs)
+	•	Use an SVG canvas with absolutely-positioned nodes.
+	•	Radial positions: angle = i*(2π/N), x = cx + r*cos(angle), y = cy + r*sin(angle).
+	•	Edges: SVG <line> or <path> with marker arrowheads.
+	•	Icon chips: small <foreignObject> or absolutely-positioned <div> using midpoints.
+	•	Accessibility: title/desc on SVG, focusable nodes, aria-label tooltips.
+
+⸻
+
+API endpoints (Next.js)
+	•	GET /api/personas/team/[id]/relationships → list edges for team.
+	•	POST /api/personas/team/[id]/relationships → insert edge.
+	•	PATCH /api/personas/relationships/[relId] → update.
+	•	DELETE /api/personas/relationships/[relId] → remove.
+
+(Use service role only via API routes; FE uses normal fetches.)
+
+⸻
+
+Phased roadmap
+
+Phase 1 (2–4 hrs dev)
+	•	Table + GET/POST endpoints.
+	•	Team page tab: Relationships (beta) with radial layout.
+	•	Create edge modal; basic filters; tooltips.
+
+Phase 2
+	•	Edge icons, legend, strength styling, tag filter.
+	•	Center-on dropdown; export PNG/SVG of graph.
+
+Phase 3
+	•	Force layout option; auto-clustering; “highlight path” on hover.
+	•	Journey integration: show only personas attached to a stage and their relationships (filters pre-scoped).
+
+⸻
+
+If you’re happy, I can:
+	•	write the SQL migration as a single file,
+	•	scaffold the API routes,
+	•	and drop a RelationshipsCanvas.jsx starter component you can paste in.

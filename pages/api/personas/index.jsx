@@ -24,7 +24,7 @@ export default function PersonaLibraryPage() {
 		  <span className="font-extrabold">Contour</span>
 		  <span className="font-light"> — Personas Library</span>
 		</h1>
-		<Link href="/personas/new" className="px-3 py-2 text-sm rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900">New Persona Set</Link>
+		<Link href="/personas/new" className="px-3 py-2 text-sm rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900">New Team</Link>
 	  </div>
 
 	  {loading ? (
