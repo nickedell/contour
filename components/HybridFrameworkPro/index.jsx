@@ -181,7 +181,7 @@ function inferKpiDomains(moments) {
    Main component
 ===================================================================================== */
 
-export default function HybridFrameworkPro() {
+export default function HybridFrameworkPro({ suppressHeader = false }) {
   // ——— Theme / UI prefs ———
   const [dark, setDark] = useState(false);
   const [followSystem, setFollowSystem] = useState(true);
@@ -423,6 +423,9 @@ export default function HybridFrameworkPro() {
   // Ensure new imports normalize moments
   const ensureLensBlocks = (m) => normalizeMoment(m);
 
+  // When header is suppressed, adjust the sticky offset for the Perspectives bar
+  const pillTopClass = suppressHeader ? 'top-14' : 'top-[89px] md:top-[81px]';
+
   return (
     <div className={dark ? 'dark' : ''}>
     
@@ -443,7 +446,7 @@ export default function HybridFrameworkPro() {
           </div>
         )}
 
-        {/* Header */}
+        {/* Header (toolbar always visible; title row optional) */}
         <header className="sticky top-0 z-30 border-b border-neutral-200 dark:border-neutral-800 backdrop-blur bg-white/70 dark:bg-[#121417]/70">
           <div className="relative">
             {/* Left open chevron — flush and high */}
@@ -457,9 +460,7 @@ export default function HybridFrameworkPro() {
                 {'>'}
               </button>
             )}
-           
-            
-
+        
             {/* Right open chevron — flush and high */}
             {!settingsOpen && (
               <button
@@ -471,26 +472,29 @@ export default function HybridFrameworkPro() {
                 {'<'}
               </button>
             )}
-
+        
             {/* Inner padded container */}
             <div className="max-w-7xl mx-auto px-4 py-3">
-              {/* Title row */}
-              <div className="flex items-center gap-3">
-                <img
-                  src="/assets/img/logo.svg"
-                  alt="Contour logo"
-                  width={28}
-                  height={28}
-                  className="h-7 w-7 rounded-md p-1 bg-neutral-900 dark:bg-transparent"
-                />
-                <h1 className="text-lg font-extrabold tracking-tight">
-                  <span className="font-extrabold">Contour</span>
-                  <span className="font-light"> — Integrated System Map</span>
-                </h1>
-              </div>
-
-              {/* Controls row — nav on left, theme on right */}
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              {/* Title row — ONLY when not suppressed */}
+              {!suppressHeader && (
+                <div className="flex items-center gap-3">
+                  <img
+                    src="/assets/img/logo.svg"
+                    alt="Contour logo"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 rounded-md p-1 bg-neutral-900 dark:bg-transparent"
+                  />
+                  <h1 className="text-lg font-extrabold tracking-tight">
+                    <span className="font-extrabold">Contour</span>
+                    <span className="font-light"> Integrated System Map</span>
+                  </h1>
+                </div>
+              )}
+        
+              {/* Controls row — ALWAYS visible.
+                  When title is hidden, tighten the spacing (mt-0 instead of mt-3). */}
+              <div className={`${suppressHeader ? 'mt-0' : 'mt-3'} flex flex-wrap items-center gap-2`}>
                 {/* View toggle */}
                 <div className="flex items-center gap-1 border border-neutral-300 dark:border-neutral-700 rounded-md overflow-hidden">
                   <button
@@ -508,7 +512,7 @@ export default function HybridFrameworkPro() {
                     Perspectives
                   </button>
                 </div>
-
+        
                 {/* Dataset selector */}
                 <select
                   value={data?.__name || 'marine'}
@@ -531,7 +535,7 @@ export default function HybridFrameworkPro() {
                   <option value="theory">Theory</option>
                   <option value="upload">Upload…</option>
                 </select>
-
+        
                 {/* Search */}
                 <input
                   type="search"
@@ -540,7 +544,7 @@ export default function HybridFrameworkPro() {
                   onChange={(e) => setQuery(e.target.value)}
                   className="pl-3 pr-3 py-1.5 text-sm rounded-md bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
                 />
-
+        
                 {/* Import/Export */}
                 <input
                   ref={fileInputRef}
@@ -585,7 +589,7 @@ export default function HybridFrameworkPro() {
                 >
                   Export
                 </button>
-
+        
                 {/* Zoom */}
                 <div className="hidden md:flex items-center gap-1 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden">
                   <button
@@ -613,7 +617,7 @@ export default function HybridFrameworkPro() {
                     <RefreshCcw className="h-4 w-4 inline-block align-[-2px]" />
                   </button>
                 </div>
-
+        
                 {/* Theme (right aligned) */}
                 <div className="ml-auto flex items-center gap-2">
                   <button
@@ -641,9 +645,10 @@ export default function HybridFrameworkPro() {
             </div>
           </div>
         </header>
+      
 
         {/* Perspectives pill bar (sticky) */}
-        <div className="sticky top-[89px] md:top-[81px] z-20 bg-white/70 dark:bg-[#121417]/70 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
+        <div className={`sticky ${pillTopClass} z-20 bg-white/70 dark:bg-[#121417]/70 backdrop-blur border-b border-neutral-200 dark:border-neutral-800`}>
           <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center gap-2">
             <span className="uppercase tracking-widest text-xs text-neutral-500">Perspectives</span>
             {LANES.map((ln) => {

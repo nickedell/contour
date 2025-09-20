@@ -1,31 +1,22 @@
 // pages/index.js
-import dynamic from 'next/dynamic';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
 const HybridFrameworkPro = dynamic(
-  () =>
-	import('@/components/HybridFrameworkPro')
-	  .then(m => {
-		console.log('[dyn] HybridFrameworkPro loaded:', !!m?.default);
-		return m;
-	  })
-	  .catch(err => {
-		console.error('[dyn] import failed:', err);
-		// Render a visible fallback so the page isn’t blank
-		return { default: () => (
-		  <div style={{ padding: 24, fontFamily: 'system-ui' }}>
-			<h1>Import failed</h1>
-			<pre>{String(err?.stack || err)}</pre>
-		  </div>
-		) };
-	  }),
-  { ssr: false, loading: () => <div style={{ padding: 24 }}>Loading…</div> }
-);
+  () => import('@/components/HybridFrameworkPro').then(m => m.default || m),
+  { ssr: false }
+)
 
 export default function Home() {
   return (
-	<ErrorBoundary>
-	  <HybridFrameworkPro />
-	</ErrorBoundary>
-  );
+	<>
+	  <Head>
+		<title>Contour — Integrated System Map</title>
+	  </Head>
+	  <div className="w-full">
+		{/* NEW: suppressHeader to hide the internal page header/tool-title */}
+		<HybridFrameworkPro suppressHeader />
+	  </div>
+	</>
+  )
 }

@@ -1,100 +1,120 @@
-// pages/personas/set/[id].jsx
 /**
- * Personas — Team Detail
- * © 2025 ResonantAI Ltd.
+ * /personas/set/[id] — Team
+ * Breadcrumb: Personas / Personas & Teams / Team
  */
-import * as React from 'react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import PersonaLayout from '@/components/personas/PersonaLayout';
-import PageHeader from '@/components/personas/PageHeader';
+import { useRouter } from 'next/router';
+import withPersonaLayout from '@/components/personas/withPersonaLayout';
 
-const fetcher = (url) => fetch(url).then((r) => r.json());
-
-export default function PersonaSetPage() {
+function TeamDetailPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: set, error } = useSWR(
-	id ? `/api/personas/set/${id}` : null,
-	fetcher
-  );
+  const [team, setTeam] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
+
+  useEffect(() => {
+	if (!id) return;
+	let alive = true;
+	(async () => {
+	  try {
+		setLoading(true);
+		setErr('');
+		const res = await fetch(`/api/personas/set/${id}`);
+		const json = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(json?.error || 'Failed to load team');
+		if (alive) setTeam(json);
+	  } catch (e) {
+		console.error(e);
+		if (alive) { setErr(e.message || 'Failed to load team'); setTeam(null); }
+	  } finally {
+		if (alive) setLoading(false);
+	  }
+	})();
+	return () => { alive = false; };
+  }, [id]);
+
+  const personas = useMemo(() => {
+	const list = Array.isArray(team?.personas) ? team.personas : [];
+	return list;
+  }, [team]);
 
   return (
-	<PersonaLayout titleSuffix="Personas">
-	  <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-		<div
-		  className="mt-6 rounded-2xl border shadow-sm"
-		  style={{ background: '#121417', borderColor: 'rgba(255,255,255,0.06)' }}
-		>
-		  <PageHeader
-			title={`Personas / Team ${set?.name || ''}`}
-			right={
-			  <>
-				<Link
-				  href="/personas/new"
-				  className="px-3 py-2 text-sm rounded-md border border-neutral-700 hover:bg-neutral-900"
-				>
-				  New Team
-				</Link>
-				<Link
-				  href="/personas"
-				  className="px-3 py-2 text-sm rounded-md border border-neutral-700 hover:bg-neutral-900"
-				>
-				  ← Back to Library
-				</Link>
-			  </>
-			}
-		  />
+	<section>
+	  <div className="mb-4">
+		<h1 className="text-xl font-bold tracking-tight">Team</h1>
+	  </div>
 
-		  <div className="px-5 sm:px-6 lg:px-8 py-6">
-			{error && (
-			  <div className="text-sm text-red-400">Failed to load team.</div>
-			)}
-			{!set && !error && (
-			  <div className="text-sm text-neutral-400">Loading…</div>
-			)}
-			{set && (
-			  <>
-				<h2 className="text-lg font-semibold">{set.context}</h2>
-				<div className="mt-2 flex flex-wrap gap-2">
-				  {set.tags?.map((t) => (
-					<span
-					  key={t}
-					  className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-700 text-neutral-300"
-					>
+	  {loading ? (
+		<div className="mt-10 text-sm text-neutral-400">Loading…</div>
+	  ) : err ? (
+		<div className="mt-10 text-sm text-red-400">{err}</div>
+	  ) : !team ? (
+		<div className="mt-10 text-sm text-neutral-400">Not found.</div>
+	  ) : (
+		<div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+		  {/* Team meta */}
+		  <div className="lg:col-span-1">
+			<div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/60 p-5">
+			  <div className="text-sm font-semibold">{team.name || 'Team'}</div>
+			  {team.context ? (
+				<p className="mt-2 text-sm text-neutral-300 leading-relaxed">{team.context}</p>
+			  ) : null}
+
+			  {Array.isArray(team.tags) && team.tags.length ? (
+				<div className="mt-3 flex flex-wrap gap-1">
+				  {team.tags.slice(0, 10).map((t) => (
+					<span key={t} className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-700 text-neutral-300">
 					  #{t}
 					</span>
 				  ))}
 				</div>
-				<div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-				  {set.personas?.map((p) => (
+			  ) : null}
+			</div>
+		  </div>
+
+		  {/* Personas list */}
+		  <div className="lg:col-span-2">
+			<div className="mb-2 text-sm uppercase tracking-widest text-neutral-500">Personas</div>
+			{personas.length === 0 ? (
+			  <div className="text-sm text-neutral-400">No personas yet.</div>
+			) : (
+			  <ul className="grid gap-3 sm:grid-cols-2">
+				{personas.map((p) => (
+				  <li key={p.id}>
 					<Link
-					  key={p.id}
 					  href={`/personas/persona/${p.id}`}
-					  className="rounded-xl border border-neutral-800 bg-neutral-950 p-4 hover:shadow"
+					  className="block rounded-xl border border-neutral-800/70 bg-neutral-950/60 hover:bg-neutral-950/80 transition p-4"
 					>
-					  <div className="text-sm font-semibold">{p.name}</div>
-					  <div className="text-xs text-neutral-500 mt-1">
-						{p.role}
+					  <div className="flex items-center justify-between gap-3">
+						<div className="min-w-0">
+						  <div className="truncate text-sm font-semibold">{p.name || p.title || 'Persona'}</div>
+						  {(p.role || p.title) && (
+							<div className="text-xs text-neutral-500 truncate">{p.role || p.title}</div>
+						  )}
+						</div>
+						<div className="text-xs text-neutral-400">Open ›</div>
 					  </div>
-					  <div className="mt-2 text-xs text-neutral-500">
-						{p.tags?.map((t) => `#${t}`).join(' ') || ''}
-					  </div>
+					  {p.summary ? (
+						<p className="mt-2 text-sm text-neutral-300 line-clamp-2">{p.summary}</p>
+					  ) : null}
 					</Link>
-				  ))}
-				  {(!set.personas || set.personas.length === 0) && (
-					<div className="text-sm text-neutral-400">
-					  No personas yet.
-					</div>
-				  )}
-				</div>
-			  </>
+				  </li>
+				))}
+			  </ul>
 			)}
 		  </div>
 		</div>
-	  </div>
-	</PersonaLayout>
+	  )}
+	</section>
   );
 }
+
+export default withPersonaLayout(TeamDetailPage, [
+  { label: 'Personas' },
+  { href: '/personas', label: 'Personas & Teams' },
+  { label: 'Team' },
+]);
