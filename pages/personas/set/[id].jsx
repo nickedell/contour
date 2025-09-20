@@ -1,49 +1,54 @@
-/**
- * /personas/set/[id] — Team
- * Breadcrumb: Personas / Personas & Teams / Team
- */
-
-import React, { useEffect, useMemo, useState } from 'react';
+// pages/personas/set/[id].js
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import withPersonaLayout from '@/components/personas/withPersonaLayout';
 
-function TeamDetailPage() {
+function TeamSetPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  const [team, setTeam] = useState(null);
+  // IMPORTANT: team + personas are separate because the API returns { set, personas }
+  const [team, setTeam] = useState(null);          // the "set" object only
+  const [personas, setPersonas] = useState([]);    // array from payload.personas
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
 
   useEffect(() => {
 	if (!id) return;
 	let alive = true;
+
 	(async () => {
 	  try {
 		setLoading(true);
 		setErr('');
-		const res = await fetch(`/api/personas/set/${id}`);
-		const json = await res.json().catch(() => ({}));
-		if (!res.ok) throw new Error(json?.error || 'Failed to load team');
-		if (alive) setTeam(json);
+		const r = await fetch(`/api/personas/set/${id}`);
+		const j = await r.json();
+
+		if (!r.ok) throw new Error(j?.error || 'Failed to load team');
+
+		// The API returns: { set: {...}, personas: [...] }
+		const t = j?.set ?? null;
+		const ppl = Array.isArray(j?.personas) ? j.personas : [];
+
+		if (alive) {
+		  setTeam(t);
+		  setPersonas(ppl);
+		}
 	  } catch (e) {
 		console.error(e);
-		if (alive) { setErr(e.message || 'Failed to load team'); setTeam(null); }
+		if (alive) setErr(e.message || 'Failed to load team');
 	  } finally {
 		if (alive) setLoading(false);
 	  }
 	})();
+
 	return () => { alive = false; };
   }, [id]);
 
-  const personas = useMemo(() => {
-	const list = Array.isArray(team?.personas) ? team.personas : [];
-	return list;
-  }, [team]);
-
   return (
 	<section>
+	  {/* Title */}
 	  <div className="mb-4">
 		<h1 className="text-xl font-bold tracking-tight">Team</h1>
 	  </div>
@@ -52,37 +57,54 @@ function TeamDetailPage() {
 		<div className="mt-10 text-sm text-neutral-400">Loading…</div>
 	  ) : err ? (
 		<div className="mt-10 text-sm text-red-400">{err}</div>
-	  ) : !team ? (
-		<div className="mt-10 text-sm text-neutral-400">Not found.</div>
 	  ) : (
-		<div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-		  {/* Team meta */}
-		  <div className="lg:col-span-1">
-			<div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/60 p-5">
-			  <div className="text-sm font-semibold">{team.name || 'Team'}</div>
-			  {team.context ? (
-				<p className="mt-2 text-sm text-neutral-300 leading-relaxed">{team.context}</p>
+		<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+		  {/* Left: Team panel (shows real name, context, tags) */}
+		  <div className="md:col-span-1">
+			<div className="mb-2 text-sm uppercase tracking-widest text-neutral-500">Team</div>
+			<div className="rounded-xl border border-neutral-800/70 bg-neutral-950/60 p-4">
+			  <div className="text-sm font-semibold truncate">
+				{team?.name || team?.title || team?.label || 'Untitled team'}
+			  </div>
+
+			  {team?.context ? (
+				<div className="mt-1 text-xs text-neutral-500">{team.context}</div>
 			  ) : null}
 
-			  {Array.isArray(team.tags) && team.tags.length ? (
+			  {Array.isArray(team?.tags) && team.tags.length ? (
 				<div className="mt-3 flex flex-wrap gap-1">
-				  {team.tags.slice(0, 10).map((t) => (
-					<span key={t} className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-700 text-neutral-300">
+				  {team.tags.slice(0, 6).map((t) => (
+					<span
+					  key={t}
+					  className="px-2 py-[2px] text-[10px] rounded-full border border-neutral-700 text-neutral-300"
+					>
 					  #{t}
 					</span>
 				  ))}
 				</div>
 			  ) : null}
+
+			  <div className="mt-4">
+				<Link
+				  href="/personas"
+				  className="text-xs text-neutral-300 underline hover:no-underline"
+				>
+				  Back to Teams &amp; Personas
+				</Link>
+			  </div>
 			</div>
 		  </div>
 
-		  {/* Personas list */}
-		  <div className="lg:col-span-2">
+		  {/* Right: Personas list (unchanged styling) */}
+		  <div className="md:col-span-2">
 			<div className="mb-2 text-sm uppercase tracking-widest text-neutral-500">Personas</div>
+
 			{personas.length === 0 ? (
-			  <div className="text-sm text-neutral-400">No personas yet.</div>
+			  <div className="rounded-xl border border-neutral-800/70 bg-neutral-950/60 p-4 text-sm text-neutral-400">
+				No personas in this team yet.
+			  </div>
 			) : (
-			  <ul className="grid gap-3 sm:grid-cols-2">
+			  <ul className="grid grid-cols-1 gap-3">
 				{personas.map((p) => (
 				  <li key={p.id}>
 					<Link
@@ -91,9 +113,13 @@ function TeamDetailPage() {
 					>
 					  <div className="flex items-center justify-between gap-3">
 						<div className="min-w-0">
-						  <div className="truncate text-sm font-semibold">{p.name || p.title || 'Persona'}</div>
+						  <div className="truncate text-sm font-semibold">
+							{p.name || p.title || 'Persona'}
+						  </div>
 						  {(p.role || p.title) && (
-							<div className="text-xs text-neutral-500 truncate">{p.role || p.title}</div>
+							<div className="text-xs text-neutral-500 truncate">
+							  {p.role || p.title}
+							</div>
 						  )}
 						</div>
 						<div className="text-xs text-neutral-400">Open ›</div>
@@ -113,8 +139,9 @@ function TeamDetailPage() {
   );
 }
 
-export default withPersonaLayout(TeamDetailPage, [
+// Breadcrumbs: Personas / Teams & Personas / Team (static labels per your spec)
+export default withPersonaLayout(TeamSetPage, [
   { label: 'Personas' },
-  { href: '/personas', label: 'Personas & Teams' },
+  { label: 'Teams & Personas', href: '/personas' },
   { label: 'Team' },
 ]);
