@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-
+import SlideOver from '@/components/ui/SlideOver';
 export default function SettingsPanel({
   open, onClose,
   commentMode, setCommentMode,
@@ -9,7 +9,9 @@ export default function SettingsPanel({
   onOpenKpiConfig,
   showGrid, setShowGrid,
 }) {
+  
   return (
+	<SlideOver open={open} onClose={onClose} title="Settings">
 	<aside className={`fixed inset-0 z-50 ${open ? '' : 'pointer-events-none opacity-0'} transition-opacity`}>
 	  <div className="absolute inset-0 bg-black/30" onClick={onClose} />
 	  <div className={`absolute inset-y-0 right-0 w-full sm:w-[420px] bg-white dark:bg-neutral-950
@@ -26,9 +28,9 @@ export default function SettingsPanel({
 		>
 		  {'>'}
 		</button>
-
+	
 		</div>
-
+	
 		<div className="p-4 space-y-4 text-sm">
 		  {/* Comments */}
 		  <section className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-3">
@@ -42,7 +44,7 @@ export default function SettingsPanel({
 			  <input value={currentUser} onChange={(e)=>setCurrentUser(e.target.value)} className="w-full px-2 py-1.5 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900" />
 			</div>
 		  </section>
-
+	
 		  {/* Heatmap */}
 		  <section className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-3">
 			<div className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Heatmap</div>
@@ -60,7 +62,7 @@ export default function SettingsPanel({
 			  </button>
 			</div>
 		  </section>
-
+	
 		  {/* Grid */}
 		  <section className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-3">
 			<div className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Canvas</div>
@@ -72,5 +74,7 @@ export default function SettingsPanel({
 		</div>
 	  </div>
 	</aside>
+	</SlideOver>
   );
+  
 }
