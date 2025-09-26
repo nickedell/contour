@@ -408,12 +408,73 @@ const DEPLOY_STEPS = [
   },
 ];
 
+// Add near EDA_STEPS / PERSONA_STEPS / DEPLOY_STEPS
+const APPENDIX_STEPS = [
+  {
+	key: 'assets',
+	name: 'Assets List',
+	blurb: 'Templates and example files referenced by the playbook.',
+	detail: (
+	  <div className="space-y-2">
+		<div className="font-semibold">EDA Support</div>
+		<ul className="list-disc pl-5 space-y-1">
+		  <li>EDA Explainer.pdf</li>
+		  <li><code>question_catalog.csv</code> — blank template for classifying questions.</li>
+		  <li><code>reflecting_ireland_eda_template.xlsx</code> — cleaning/visualisation/heatmap template.</li>
+		</ul>
+
+		<div className="font-semibold mt-3">Persona Schema</div>
+		<ul className="list-disc pl-5 space-y-1">
+		  <li><code>persona_schema.json</code> — required fields for every persona.</li>
+		</ul>
+
+		<div className="font-semibold mt-3">Persona Data</div>
+		<ul className="list-disc pl-5 space-y-1">
+		  <li><code>personas_example.json</code> — sample personas (e.g. “Snappy Saver”).</li>
+		</ul>
+
+		<div className="font-semibold mt-3">Prompt library (.md)</div>
+		<ul className="list-disc pl-5 space-y-1">
+		  <li><code>prompt_library.md</code></li>
+		</ul>
+	  </div>
+	),
+  },
+  {
+	key: 'cleaning-guide',
+	name: 'Data cleaning guide (PTSB Data)',
+	blurb: 'Reference guide for cleaning the PTSB survey.',
+	detail: (
+	  <div className="space-y-2">
+		<p>Use the region lookup (Dublin, Rest of Leinster, Munster, Connacht, Ulster), normalise scales, remove duplicates/blanks, and align question ids to the <code>question_catalog.csv</code>.</p>
+	  </div>
+	),
+  },
+  {
+	key: 'survey-design',
+	name: 'Design Guidance for Future Surveys',
+	blurb: 'Make future surveys more analysis-friendly.',
+	detail: (
+	  <div className="space-y-2">
+		<ul className="list-disc pl-5 space-y-1">
+		  <li>Prefer consistent Likert scales; avoid double-barrel questions.</li>
+		  <li>Include demographic anchors enabling stratification (age bands, region).</li>
+		  <li>Add a small set of behavioural questions to tie attitudes to actions.</li>
+		  <li>Pre-tag questions with provisional category/theme where possible.</li>
+		</ul>
+	  </div>
+	),
+  },
+];
+
+
 /* ---------- Stages block ---------- */
 const STAGES = [
   { key: 'eda', letter: 'A', title: 'EXPLORATORY DATA ANALYSIS (EDA)', steps: EDA_STEPS },
   { key: 'personas', letter: 'B', title: 'PERSONA CREATION', steps: PERSONA_STEPS },
   { key: 'deploy', letter: 'C', title: 'HUMAN REVIEW / SYSTEM DEPLOYMENT', steps: DEPLOY_STEPS },
-];
+  { key: 'appendix', letter: 'D', title: 'APPENDIX',                         steps: APPENDIX_STEPS },
+  ];
 
 /* ---------- Presentational helpers ---------- */
 function StageColumn({ stage, onOpen }) {
