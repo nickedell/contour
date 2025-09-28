@@ -212,8 +212,8 @@ export default function DataPlaybookPage() {
 	stepId: firstStep?.id,
   });
   
- // Which stage is currently in view (for active lozenge styling)
- const [viewStageKey, setViewStageKey] = React.useState(firstSection?.key);
+  // Which stage is currently in view (for active lozenge styling)
+  const [viewStageKey, setViewStageKey] = React.useState(firstSection?.key);
 
   // Fetch /playbook.json (no-store) and fall back to default
   React.useEffect(() => {
@@ -274,7 +274,7 @@ export default function DataPlaybookPage() {
 	}));
   }, [playbook.sections]);
 
-// Refs for smooth scroll per stage (stable per key)
+  // Refs for smooth scroll per stage (stable per key)
   const sectionRefs = React.useRef({});
   const getSectionRef = React.useCallback((key) => {
 	if (!sectionRefs.current[key]) {
@@ -283,7 +283,7 @@ export default function DataPlaybookPage() {
 	return sectionRefs.current[key];
   }, []);
 
-// Observe sections so the active pill follows scroll (must run after stages/refs exist)
+  // Observe sections so the active pill follows scroll (must run after stages/refs exist)
   React.useEffect(() => {
 	const observer = new IntersectionObserver(
 	  (entries) => {
@@ -303,7 +303,6 @@ export default function DataPlaybookPage() {
   
 	return () => observer.disconnect();
   }, [stages, getSectionRef]);
-
 
   // Active objects
   const activeStage = React.useMemo(
@@ -389,9 +388,61 @@ export default function DataPlaybookPage() {
 
   const scrollToStage = (key) => {
 	const node = getSectionRef(key)?.current;
-
 	if (node) node.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   };
+
+  /* -------- BAND-AID: Hide "< Guide" link ONLY on this page -------- */
+  React.useEffect(() => {
+	// 1) Inject a global style that hides any anchor whose href contains /personas/guide
+	const style = document.createElement('style');
+	style.id = 'hide-guide-link-style';
+	style.textContent = `
+	  a[href*="/personas/guide"],
+	  a[href*="/Personas/guide"],
+	  a[href*="personas/guide"],
+	  a[href$="/guide"],
+	  a[href$="/guide/"] { display: none !important; }
+	`;
+	document.head.appendChild(style);
+
+	// 2) JS pass — catch variants (icons, absolute URLs, text-only, etc.)
+	const hideCandidates = () => {
+	  const nodes = document.querySelectorAll('a, [role="link"], button');
+	  nodes.forEach((el) => {
+		const href = (el.getAttribute('href') || '').toLowerCase();
+		const aria = (el.getAttribute('aria-label') || '').toLowerCase();
+		const title = (el.getAttribute('title') || '').toLowerCase();
+		const text = (el.textContent || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+		const looksGuide =
+		  href.includes('/personas/guide') ||
+		  href.endsWith('/guide') ||
+		  href.endsWith('/guide/') ||
+		  aria.includes('guide') ||
+		  title.includes('guide') ||
+		  text.includes('guide');
+
+		if (looksGuide) {
+		  el.dataset._guideHidden = 'true';
+		  el.style.display = 'none';
+		}
+	  });
+	};
+
+	hideCandidates();
+	const mo = new MutationObserver(hideCandidates);
+	mo.observe(document.body, { childList: true, subtree: true });
+
+	return () => {
+	  mo.disconnect();
+	  try { document.head.removeChild(style); } catch {}
+	  document.querySelectorAll('[data-_guide-hidden]').forEach((el) => {
+		el.style.display = '';
+		delete el.dataset._guideHidden;
+	  });
+	};
+  }, []);
+  /* ----------------------------------------------------------------- */
 
   // Intro: prefer JSON; if absent, fall back to the flat one-pager content verbatim
   const INTRO = (() => {
@@ -468,59 +519,50 @@ export default function DataPlaybookPage() {
 		</Link>
 	  }
 	>
-{/* Sticky header — Workflow row (full-width grey bar + keyline, flush to nav) */}
-	<div className="sticky top-[3.45rem] z-30 -mt-[1.5rem] mb-5">
+	  {/* Sticky header — Workflow row (full-width grey bar + keyline, flush to nav) */}
+	  <div className="sticky top-[3.45rem] z-30 -mt-[1.5rem] mb-5">
+		{/* full-bleed background while keeping centered content */}
+		<div className="
+		  relative left-1/2 -ml-[50vw] w-screen
+		  bg-neutral-100/90 dark:bg-neutral-900/70
+		  supports-[backdrop-filter]:backdrop-blur
+		  supports-[backdrop-filter]:bg-neutral-100/70
+		  dark:supports-[backdrop-filter]:bg-neutral-900/60
+		  border-b border-neutral-200 dark:border-neutral-800
+		">
+		  <div className="max-w-[1300px] mx-auto px-4 py-1.5">
+			<div className="flex flex-wrap items-center gap-2">
+			  <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-500">Workflow</span>
 
-
-	  {/* full-bleed background while keeping centered content */}
-	  <div className="
-		relative left-1/2 -ml-[50vw] w-screen
-		bg-neutral-100/90 dark:bg-neutral-900/70
-		supports-[backdrop-filter]:backdrop-blur
-		supports-[backdrop-filter]:bg-neutral-100/70
-		dark:supports-[backdrop-filter]:bg-neutral-900/60
-		border-b border-neutral-200 dark:border-neutral-800
-	  ">
-		<div className="max-w-[1300px] mx-auto px-4 py-1.5">
-
-		  <div className="flex flex-wrap items-center gap-2">
-			<span className="text-[10px] uppercase tracking-[0.2em] text-neutral-500">Workflow</span>
-	
-			{stages.map((s) => {
-			  const active = viewStageKey === s.key; // from the IntersectionObserver
-			  return (
-				<button
-				  key={s.key}
-				  onClick={() => scrollToStage(s.key)}
-				  aria-pressed={active}
-				  className={[
-					"rounded-full px-3 py-1.5 text-[12px] font-medium transition border",
-					active
-					  ? "bg-neutral-800 text-neutral-50 border-neutral-700"
-					  : "bg-neutral-950/40 text-neutral-300 border-neutral-800 hover:bg-neutral-800/60",
-				  ].join(" ")}
-				  title={`${s.letter}: ${s.title}`}
-				>
-				  {s.title}
-				</button>
-			  );
-			})}
+			  {stages.map((s) => {
+				const active = viewStageKey === s.key; // from the IntersectionObserver
+				return (
+				  <button
+					key={s.key}
+					onClick={() => scrollToStage(s.key)}
+					aria-pressed={active}
+					className={[
+					  "rounded-full px-3 py-1.5 text-[12px] font-medium transition border",
+					  active
+						? "bg-neutral-800 text-neutral-50 border-neutral-700"
+						: "bg-neutral-950/40 text-neutral-300 border-neutral-800 hover:bg-neutral-800/60",
+					].join(" ")}
+					title={`${s.letter}: ${s.title}`}
+				  >
+					{s.title}
+				  </button>
+				);
+			  })}
+			</div>
 		  </div>
 		</div>
 	  </div>
-	</div>
-
-
-
-
 
 	  {/* Canvas — horizontal columns (unchanged layout) */}
 	  <div className="w-full overflow-x-auto pb-8">
 		<div className="grid auto-cols-[420px] grid-flow-col gap-6 min-w-max">
 		  {stages.map((stage) => (
 			<section key={stage.key} ref={getSectionRef(stage.key)} data-stage-key={stage.key}>
-
-
 			  <StageColumn
 				stage={stage}
 				onOpen={openStep}
