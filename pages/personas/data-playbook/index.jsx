@@ -472,8 +472,7 @@ export default function DataPlaybookPage() {
 		</h2>
 		<p><b>EDA → Personas → Decision Engine Framework</b></p>
 		<p>
-		  We have created a repeatable playbook that takes attitudinal and behavioural survey data (e.g. PTSB’s
-		  Reflecting Ireland survey) and transforms it into decision-ready personas.
+		  We have created a repeatable playbook that takes attitudinal and behavioural survey data (e.g. a customer survey) and transforms it into decision-ready personas.
 		</p>
 		<div>
 		  <div className="font-semibold mb-1">Why this is useful:</div>
